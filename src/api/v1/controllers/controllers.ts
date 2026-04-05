@@ -10,7 +10,8 @@ import { getHealthStatusService,
            getAllWeaponsService,
             getAllFactionsService,
              getShellByNameService,
-              getWeaponByNameService} from "../services/services";
+              getWeaponByNameService,
+               getFactionByNameService} from "../services/services";
 
 export const getHealthCheck = (req: Request, res: Response): void => {
     try{
@@ -63,7 +64,7 @@ export const getShellByName = (req:Request, res:Response): void => {
     }
 }
 
-export const getWeaponsByName = (req: Request, res:Response): void => {
+export const getWeaponByName = (req: Request, res:Response): void => {
     const weaponName: string = String(req.params.name);
 
     //! add validation
@@ -75,5 +76,20 @@ export const getWeaponsByName = (req: Request, res:Response): void => {
         return;
     } else {
         res.status(HTTP_STATUS.OK).json(selectedWeapon);
+    }
+}
+
+export const getFactionByName = (req: Request, res:Response): void => {
+    const factionName: string = String(req.params.name);
+
+    //! add validation
+
+    const selectedFaction: Factions = getFactionByNameService(factionName);
+
+    if(!selectedFaction){
+        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+        return;
+    } else {
+        res.status(HTTP_STATUS.OK).json(selectedFaction);
     }
 }
