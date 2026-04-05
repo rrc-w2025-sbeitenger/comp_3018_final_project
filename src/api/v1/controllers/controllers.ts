@@ -9,8 +9,8 @@ import { getHealthStatusService,
           getAllShellsService,
            getAllWeaponsService,
             getAllFactionsService,
-             getShellByNameService} from "../services/services";
-import { string } from "node_modules/@types/yargs";
+             getShellByNameService,
+              getWeaponByNameService} from "../services/services";
 
 export const getHealthCheck = (req: Request, res: Response): void => {
     try{
@@ -50,7 +50,7 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
 
 export const getShellByName = (req:Request, res:Response): void => {
     const shellName: string = String(req.params.name);
-    
+
     //! add validation
 
     const selectedShell: Shell = getShellByNameService(shellName);
@@ -60,5 +60,20 @@ export const getShellByName = (req:Request, res:Response): void => {
         return;
     } else {
         res.status(HTTP_STATUS.OK).json(selectedShell);
+    }
+}
+
+export const getWeaponsByName = (req: Request, res:Response): void => {
+    const weaponName: string = String(req.params.name);
+
+    //! add validation
+
+    const selectedWeapon: Weapons = getWeaponByNameService(weaponName);
+
+    if(!selectedWeapon){
+        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+        return;
+    } else {
+        res.status(HTTP_STATUS.OK).json(selectedWeapon);
     }
 }
