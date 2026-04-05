@@ -8,7 +8,9 @@ import { Factions } from "../models/factionsModel";
 import { getHealthStatusService,
           getAllShellsService,
            getAllWeaponsService,
-            getAllFactionsService} from "../services/services";
+            getAllFactionsService,
+             getShellByNameService} from "../services/services";
+import { string } from "node_modules/@types/yargs";
 
 export const getHealthCheck = (req: Request, res: Response): void => {
     try{
@@ -43,5 +45,20 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
         res.status(HTTP_STATUS.OK).json(successResponse(getAllFactionsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
+    }
+}
+
+export const getShellByName = (req:Request, res:Response): void => {
+    const shellName: string = String(req.params.name);
+    
+    //! add validation
+
+    const selectedShell: Shell = getShellByNameService(shellName);
+
+    if(!selectedShell){
+        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+        return;
+    } else {
+        res.status(HTTP_STATUS.OK).json(selectedShell);
     }
 }
