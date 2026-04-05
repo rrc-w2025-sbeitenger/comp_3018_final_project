@@ -3,8 +3,10 @@ import { Request, Response }from "express";
 import { successResponse } from "../models/responseModel"; 
 import { HealthCheckResponse } from "../models/healthCheckResponse";
 import { Shell } from "../models/shellModel";
+import { Weapons } from "../models/weaponsModel";
 import { getHealthStatusService,
-          getAllShellsService} from "../services/services";
+          getAllShellsService,
+           getAllWeaponsService} from "../services/services";
 
 export const getHealthCheck = (req: Request, res: Response): void => {
     try{
@@ -19,6 +21,15 @@ export const getAllShells = async (req: Request, res:Response): Promise<void> =>
     try {
         const getAllShellsResult: Shell[] = await getAllShellsService();
         res.status(HTTP_STATUS.OK).json(successResponse(getAllShellsResult));
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
+    }
+}
+
+export const getAllWeapons = async (req: Request, res:Response): Promise<void> => {
+    try {
+        const getAllWeaponsResult: Weapons[] = await getAllWeaponsService();
+        res.status(HTTP_STATUS.OK).json(successResponse(getAllWeaponsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
     }
