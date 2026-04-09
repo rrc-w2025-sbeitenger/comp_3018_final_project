@@ -15,6 +15,8 @@ import { getHealthStatusService,
                 createShellService,
                  createWeaponService,
                   createFactionService} from "../services/services";
+import { ShellRequest } from "../models/shellRequest";
+import { WeaponsRequest } from "../models/weaponsRequest";
 
 //CHECKCHECK
 export const getHealthCheck = (req: Request, res: Response): void => {
@@ -55,135 +57,119 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
 }
 
 //GET BY
-export const getShellByName = (req:Request, res:Response): void => {
-    const shellName: string = String(req.params.name);
+export const getShellByName = async (req:Request, res:Response): Promise<void> => {
+    try{
+        const shellName: string = String(req.params.name);
+        const selectedShell: Shell | false = await getShellByNameService(shellName);
 
-    //! add validation
-
-    const selectedShell: Shell = getShellByNameService(shellName);
-
-    if(!selectedShell){
-        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
-        return;
-    } else {
-        res.status(HTTP_STATUS.OK).json(selectedShell);
+        if(selectedShell == false){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+            return;
+        } else {
+            res.status(HTTP_STATUS.OK).json(selectedShell);
+        }
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
 }
 
-export const getWeaponByName = (req: Request, res:Response): void => {
-    const weaponName: string = String(req.params.name);
+export const getWeaponByName = async (req: Request, res:Response): Promise<void> => {
+    try{
+        const weaponName: string = String(req.params.name);
+        const selectedWeapon: Weapons | false = await getWeaponByNameService(weaponName);
 
-    //! add validation
-
-    const selectedWeapon: Weapons = getWeaponByNameService(weaponName);
-
-    if(!selectedWeapon){
-        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
-        return;
-    } else {
-        res.status(HTTP_STATUS.OK).json(selectedWeapon);
+        if(selectedWeapon == false){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+            return;
+        } else {
+            res.status(HTTP_STATUS.OK).json(selectedWeapon);
+        }
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
 }
 
-export const getFactionByName = (req: Request, res:Response): void => {
-    const factionName: string = String(req.params.name);
+export const getFactionByName = async (req: Request, res:Response): Promise<void> => {
+    try{
+        const factionName: string = String(req.params.name);
+        const selectedFaction: Factions | false = await getFactionByNameService(factionName);
 
-    //! add validation
-
-    const selectedFaction: Factions = getFactionByNameService(factionName);
-
-    if(!selectedFaction){
-        res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
-        return;
-    } else {
-        res.status(HTTP_STATUS.OK).json(selectedFaction);
+        if(selectedFaction == false){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
+            return;
+        } else {
+            res.status(HTTP_STATUS.OK).json(selectedFaction);
+        }
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
 }
 
 //POST
-export const createShell = (req: Request, res: Response): void => {
-    const prime: string = req.body.prime;
-    const tactical: string = req.body.tactical;
-    const trait_1: string = req.body.trait_1;
-    const trait_2: string = req.body.trait_2;
-    const heat_capacity: number = Number(req.body.heat_capacity);
-    const agility: number = Number(req.body.agility);
-    const loot_speed: number = Number(req.body.loot_speed);
-    const melee_damage: number = Number(req.body.melee_damage);
-    const prime_recovery: number = Number(req.body.prime_recovery);
-    const tactical_recovery: number = Number(req.body.tactical_recovery);
-    const self_repair_speed: number = Number(req.body.self_repair_speed);
-    const finisher_siphon: number = Number(req.body.finisher_siphon);
-    const revive_speed: number = Number(req.body.revive_speed);
-    const hardware: number = Number(req.body.hardware);
-    const firewall: number = Number(req.body.firewall);
-    const fall_resistance: number = Number(req.body.fall_resistance);
-    const ping_duration: number = Number(req.body.ping_duration);
+export const createShell = async (req: Request, res: Response): Promise<void> => {
+    try{
+        const shellCreateRequest: ShellRequest = {
+        shell_name: req.body.name,
+        prime: req.body.prime,
+        tactical: req.body.tactical,
+        trait_1: req.body.trait_1,
+        trait_2: req.body.trait_2,
+        heat_capacity: Number(req.body.heat_capacity),
+        agility: Number(req.body.agility),
+        loot_speed: Number(req.body.loot_speed),
+        melee_damage: Number(req.body.melee_damage),
+        prime_recovery: Number(req.body.prime_recovery),
+        tactical_recovery: Number(req.body.tactical_recovery),
+        self_repair_speed: Number(req.body.self_repair_speed),
+        finisher_siphon: Number(req.body.finisher_siphon),
+        revive_speed: Number(req.body.revive_speed),
+        hardware: Number(req.body.hardware),
+        firewall: Number(req.body.firewall),
+        fall_resistance: Number(req.body.fall_resistance),
+        ping_duration: Number(req.body.ping_duration),
+    }
+    
+        const newShell: Shell = await createShellService(shellCreateRequest);
+        res.status(HTTP_STATUS.CREATED).json(newShell);
 
-    /**
-     *  prime: string,
-    tactical: string,
-    trait_1: string,
-    trait_2: string, 
-    heat_capacity: number,
-    agility: number,
-    loot_speed: number,
-    melee_damage: number,
-    prime_recovery: number,
-    tactical_recovery: number,
-    self_repair_speed: number,
-    finisher_siphon: number,
-    revive_speed: number,
-    hardware: number,
-    firewall: number,
-    fall_resistance: number,
-    ping_duration: number
-     */
-    const newShell: Shell = createShellService(prime,
-                                               tactical,
-                                               trait_1, 
-                                               trait_2, 
-                                               heat_capacity, 
-                                               agility, 
-                                               loot_speed, 
-                                               melee_damage, 
-                                               prime_recovery, 
-                                               tactical_recovery, 
-                                               self_repair_speed,
-                                               finisher_siphon,
-                                               revive_speed, 
-                                               hardware,
-                                               firewall,
-                                               fall_resistance,
-                                               ping_duration);
-    res.status(HTTP_STATUS.CREATED).json(newShell);
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
+    }
 }
 
-export const createWeapon = (req: Request, res: Response): void => {
-    const ads_speed: string = req.body.ads_speed;
-    const aim_assist: number = Number(req.body.aim_assist);
-    const damage: number = Number(req.body.damage);
-    const equip_speed: string = req.body.equip_speed;
-    const precision_multiplier: number = Number(req.body.precision_multiplier);
-    const rate_of_fire: string = req.body.rate_of_fire;
-    const recoil: string = req.body.recoil;
-    const reload: string = req.body.reload;
+export const createWeapon = async (req: Request, res: Response): Promise<void> => {
+    try{
+        const weaponCreateRequest: WeaponsRequest = {
+        weapon_name: req.body.weapon_name,
+        ads_speed: req.body.ads_speed,
+        aim_assist: Number(req.body.aim_assist),
+        damage: Number(req.body.damage),
+        equip_speed: req.body.equip_speed,
+        precision_multiplier: Number(req.body.precision_multiplier),
+        rate_of_fire: req.body.rate_of_fire,
+        recoil:  req.body.recoil,
+        reload_speed: req.body.reload
+    }
 
-    const newWeapon: Weapons = createWeaponService(ads_speed,
-                                                   aim_assist, 
-                                                   damage, 
-                                                   equip_speed, 
-                                                   precision_multiplier, 
-                                                   rate_of_fire, 
-                                                   recoil, 
-                                                   reload)
-    res.status(HTTP_STATUS.CREATED).json(newWeapon);
+        const newWeapon: Weapons = createWeaponService(weaponCreateRequest)
+        res.status(HTTP_STATUS.CREATED).json(newWeapon);
+
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
+    }
 }
 
 export const createFaction = (req: Request, res: Response): void => {
-    const lore: string = req.body.lore;
-    const name: string = req.body.name;
+    try{
 
-    const newFaction: Factions = createFactionService(lore, name)
-    res.status(HTTP_STATUS.CREATED).json(newFaction);
+        const factionCreateRequest: Factions = {
+        lore: req.body.lore,
+        name: req.body.name
+    }
+        const newFaction: Factions = createFactionService(factionCreateRequest)
+        res.status(HTTP_STATUS.CREATED).json(newFaction);
+        
+    }catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
+    }
 }
