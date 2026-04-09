@@ -1,8 +1,11 @@
+import { promises } from "node:dns";
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
 import { Factions } from "../models/factionsModel";
 import { HealthCheckResponse } from "../models/healthCheckResponse";
 import { Shell } from "../models/shellModel";
+import { ShellRequest } from "../models/shellRequest";
 import { Weapons } from "../models/weaponsModel";
+import { WeaponsRequest } from "../models/weaponsRequest";
 
 /**
  * returns healthCheck server status.
@@ -90,40 +93,15 @@ export const getFactionByNameService = async (factionName: string): Promise<Fact
     }
 }
 
-export const createShellService = (prime: string,
-                                    tactical: string,
-                                    trait_1: string, 
-                                    trait_2: string, 
-                                    heat_capacity: number, 
-                                    agility: number, 
-                                    loot_speed: number, 
-                                    melee_damage: number, 
-                                    prime_recovery: number, 
-                                    tactical_recovery: number, 
-                                    self_repair_speed: number,
-                                    finisher_siphon: number,
-                                    revive_speed: number, 
-                                    hardware: number,
-                                    firewall: number,
-                                    fall_resistance: number,
-                                    ping_duration: number
-                                  ): any => {
-    console.log("create shell");
+export const createShellService = async (shellCreateRequest: ShellRequest): Promise<Shell> => {
+    return await addShell(shellCreateRequest);
 }
 
-export const createWeaponService = (ads_speed: string,
-                                    aim_assist: number,
-                                    damage: number,
-                                    equip_speed: string,
-                                    precision_multiplier: number,
-                                    rate_of_fire: string,
-                                    recoil: string,
-                                    reload: string
-                                   ): any => {
-    console.log("create weapon");
+export const createWeaponService = async (weaponCreateRequest: WeaponsRequest): Promise<Weapons> => {
+    return await addWeapon(weaponCreateRequest);
 }
 
-export const createFactionService = (lore: string, name: string): any => {
-    console.log("create faction");
+export const createFactionService = async (factionCreateRequest: Factions): Promise<Factions> => {
+    return await addFaction(factionCreateRequest);
 }
 
