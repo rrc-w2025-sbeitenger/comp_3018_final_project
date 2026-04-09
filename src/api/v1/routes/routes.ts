@@ -12,6 +12,36 @@ import { getHealthCheck,
 
 const router:Router = express.Router();
 
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Returns the health status of the server
+ *     tags: [Health]
+ *     responses:
+ *       '200':
+ *         description: Server is running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   $ref: '#/components/schemas/HealthCheckResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ */
 router.get("/health", getHealthCheck);
 router.get("/shells", getAllShells);
 router.get("/weapons", getAllWeapons);
