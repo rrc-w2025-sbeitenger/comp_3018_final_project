@@ -1,5 +1,8 @@
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
+import { Factions } from "../models/factionsModel";
 import { HealthCheckResponse } from "../models/healthCheckResponse";
+import { Shell } from "../models/shellModel";
+import { Weapons } from "../models/weaponsModel";
 
 /**
  * returns healthCheck server status.
@@ -14,25 +17,25 @@ export const getHealthStatusService = (): HealthCheckResponse => {
     };
 }
 
-export const getAllShellsService = (): any => {
-    console.log("shells");
-    //I have the Database created, but inorder for me to do the service logic I stil need to connect it.  
+export const getAllShellsService = async (): Promise<Shell[]> => {
+    //call repositories.
+    return await getShellCollection();
 }
 
-export const getAllWeaponsService = (): any => {
-    console.log("weapons");
+export const getAllWeaponsService = async (): Promise<Weapons[]> => {
+    return await getWeaponCollection();
 }
 
-export const getAllFactionsService = (): any => {
-    console.log("Factions");
+export const getAllFactionsService = async (): Promise<Factions[]> => {
+    return await getFactionsCollection();
 }
 
-export const getShellByNameService = (shellName: string): any => {
-    console.log("shell by name");
+export const getShellByNameService = async (shellName: string): Promise<Shell | false> => {
+    
 }
 
-export const getWeaponByNameService = (weaponName: string): any => {
-    console.log("weapon by name");
+export const getWeaponByNameService = async (weaponName: string): Promise<Weapons | false> => {
+    
 }
 
 export const getFactionByNameService = (factionName: string): any => {
