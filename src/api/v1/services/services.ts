@@ -13,3 +13,50 @@ export const getHealthStatusService = (): HealthCheckResponse => {
         version: '1.0.0'
     };
 }
+
+export const getAllShellsService = (): any => {
+    console.log("shells");
+    //I have the Database created, but inorder for me to do the service logic I stil need to connect it.  
+}
+
+export const getAllWeaponsService = (): any => {
+    console.log("weapons");
+}
+
+export const getAllFactionsService = (): any => {
+    console.log("Factions");
+}
+
+export const getShellByNameService = (shellName: string): any => {
+    console.log("shell by name");
+}
+
+export const getWeaponByNameService = (weaponName: string): any => {
+    console.log("weapon by name");
+}
+
+export const getFactionByNameService = (factionName: string): any => {
+    console.log("faction by name");
+}
+
+export const createShellService = (prime: string,
+                                    tactical: string,
+                                    trait_1: string, 
+                                    trait_2: string, 
+                                    heat_capacity: number, 
+                                    agility: number, 
+                                    loot_speed: number, 
+                                    melee_damage: number, 
+                                    prime_recovery: number, 
+                                    tactical_recovery: number, 
+                                    self_repair_speed: number,
+                                    finisher_siphon: number,
+                                    revive_speed: number, 
+                                    hardware: number,
+                                    firewall: number,
+                                    fall_resistance: number,
+                                    ping_duration: number
+                                  ): any => {
+    console.log("create shell");
+}
+
