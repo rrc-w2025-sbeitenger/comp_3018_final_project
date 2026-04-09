@@ -201,9 +201,35 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
         const updatedShell: any = await updateShellByNameService(name, updateShellRequest);
         
         if(updatedShell == false){
-            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid "name" is required.`});
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid shell name is required.`});
         } else {
             res.status(HTTP_STATUS.OK).json(successResponse(updatedShell, `Entity ${name} was updated`));
+        }
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
+    }
+}
+
+export const updateWeapon = async (req: Request, res:Response): Promise<void> => {
+    try{
+        const name: string = String(req.params.name);
+        const updateWeaponRequest: Weapons = {
+            ads_speed: req.body.ads_speed,
+            aim_assist: Number(req.body.aim_assist),
+            damage: Number(req.body.damage),
+            equip_speed: req.body.equip_speed,
+            precision_multiplier: Number(req.body.precision_multiplier),
+            rate_of_fire: req.body.rate_of_fire,
+            recoil:  req.body.recoil,
+            reload_speed: req.body.reload
+        }
+
+        const updatedWeapon: any = await updateWeaponByNameService(name, updateWeaponRequest);
+        
+        if(updatedWeapon == false){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
+        } else {
+            res.status(HTTP_STATUS.OK).json(successResponse(updatedWeapon, `Entity ${name} was updated`));
         }
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
