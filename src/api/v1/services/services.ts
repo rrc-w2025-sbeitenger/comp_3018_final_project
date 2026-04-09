@@ -1,5 +1,11 @@
+import { promises } from "node:dns";
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
+import { Factions } from "../models/factionsModel";
 import { HealthCheckResponse } from "../models/healthCheckResponse";
+import { Shell } from "../models/shellModel";
+import { ShellRequest } from "../models/shellRequest";
+import { Weapons } from "../models/weaponsModel";
+import { WeaponsRequest } from "../models/weaponsRequest";
 
 /**
  * returns healthCheck server status.
@@ -14,65 +20,88 @@ export const getHealthStatusService = (): HealthCheckResponse => {
     };
 }
 
-export const getAllShellsService = (): any => {
-    console.log("shells");
-    //I have the Database created, but inorder for me to do the service logic I stil need to connect it.  
+export const getAllShellsService = async (): Promise<Shell[]> => {
+    //call repositories.
+    return await getShellCollection();
 }
 
-export const getAllWeaponsService = (): any => {
-    console.log("weapons");
+export const getAllWeaponsService = async (): Promise<Weapons[]> => {
+    return await getWeaponCollection();
 }
 
-export const getAllFactionsService = (): any => {
-    console.log("Factions");
+export const getAllFactionsService = async (): Promise<Factions[]> => {
+    return await getFactionsCollection();
 }
 
-export const getShellByNameService = (shellName: string): any => {
-    console.log("shell by name");
+export const getShellByNameService = async (shellName: string): Promise<Shell | false> => {
+    const entity: Shell | false = await getShellById(shellName);
+
+    if(!entity){
+        return false;
+    } else {
+        return {
+            prime: entity.prime,
+            tactical: entity.tactical,
+            trait_1: entity.trait_1,
+            trait_2: entity.trait_2, 
+            heat_capacity: entity.heat_capacity,
+            agility: entity.agility,
+            loot_speed: entity.loot_speed,
+            melee_damage: entity.melee_damage,
+            prime_recovery: entity.prime_recovery,
+            tactical_recovery: entity.tactical_recovery,
+            self_repair_speed: entity.self_repair_speed,
+            finisher_siphon: entity.finisher_siphon,
+            revive_speed: entity.revive_speed,
+            hardware: entity.hardware,
+            firewall: entity.firewall,
+            fall_resistance: entity.fall_resistance,
+            ping_duration: entity.ping_duration
+        }
+    }
 }
 
-export const getWeaponByNameService = (weaponName: string): any => {
-    console.log("weapon by name");
+export const getWeaponByNameService = async (weaponName: string): Promise<Weapons | false> => {
+    const entity: Weapons | false = await getWeaponById(weaponName);
+
+    if(!entity){
+        return false;
+    } else {
+        return {
+            damage: entity.damage,
+            precision_multiplier: entity.precision_multiplier,
+            rate_of_fire: entity.rate_of_fire,
+            ads_speed: entity.ads_speed,
+            equip_speed: entity.equip_speed,
+            reload_speed: entity.reload_speed,
+            recoil: entity.recoil, 
+            aim_assist: entity.aim_assist,
+        }
+    }
 }
 
-export const getFactionByNameService = (factionName: string): any => {
-    console.log("faction by name");
+export const getFactionByNameService = async (factionName: string): Promise<Factions | false> => {
+    const entity: Factions | false = await getFactionById(factionName);
+
+    if(!entity){
+        return false;
+    } else {
+        return {
+            name: entity.name,
+            lore: entity.lore,
+        }
+    }
 }
 
-export const createShellService = (prime: string,
-                                    tactical: string,
-                                    trait_1: string, 
-                                    trait_2: string, 
-                                    heat_capacity: number, 
-                                    agility: number, 
-                                    loot_speed: number, 
-                                    melee_damage: number, 
-                                    prime_recovery: number, 
-                                    tactical_recovery: number, 
-                                    self_repair_speed: number,
-                                    finisher_siphon: number,
-                                    revive_speed: number, 
-                                    hardware: number,
-                                    firewall: number,
-                                    fall_resistance: number,
-                                    ping_duration: number
-                                  ): any => {
-    console.log("create shell");
+export const createShellService = async (shellCreateRequest: ShellRequest): Promise<Shell> => {
+    return await addShell(shellCreateRequest);
 }
 
-export const createWeaponService = (ads_speed: string,
-                                    aim_assist: number,
-                                    damage: number,
-                                    equip_speed: string,
-                                    precision_multiplier: number,
-                                    rate_of_fire: string,
-                                    recoil: string,
-                                    reload: string
-                                   ): any => {
-    console.log("create weapon");
+export const createWeaponService = async (weaponCreateRequest: WeaponsRequest): Promise<Weapons> => {
+    return await addWeapon(weaponCreateRequest);
 }
 
-export const createFactionService = (lore: string, name: string): any => {
-    console.log("create faction");
+export const createFactionService = async (factionCreateRequest: Factions): Promise<Factions> => {
+    return await addFaction(factionCreateRequest);
 }
 
