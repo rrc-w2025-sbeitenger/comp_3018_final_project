@@ -60,3 +60,19 @@ export const createShellService = (prime: string,
     console.log("create shell");
 }
 
+export const createWeaponService = (ads_speed: string,
+                                    aim_assist: number,
+                                    damage: number,
+                                    equip_speed: string,
+                                    precision_multiplier: number,
+                                    rate_of_fire: string,
+                                    recoil: string,
+                                    reload: string
+                                   ): any => {
+    console.log("create weapon");
+}
+
+export const createFactionService = (lore: string, name: string): any => {
+    console.log("create faction");
+}
+
