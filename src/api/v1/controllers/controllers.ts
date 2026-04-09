@@ -173,3 +173,39 @@ export const createFaction = (req: Request, res: Response): void => {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
     }
 }
+
+//PUT
+export const updateShell = async (req: Request, res:Response): Promise<void> => {
+    try{
+        const name: string = String(req.params.name);
+        const updateShellRequest: Shell = {
+            prime: req.body.prime,
+            tactical: req.body.tactical,
+            trait_1: req.body.trait_1,
+            trait_2: req.body.trait_2, 
+            heat_capacity: req.body.heat_capacity,
+            agility: req.body.agility,
+            loot_speed: req.body.loot_speed,
+            melee_damage: req.body.melee_damage,
+            prime_recovery: req.body.prime_recovery,
+            tactical_recovery: req.body.tactical_recovery,
+            self_repair_speed: req.body.self_repair_speed,
+            finisher_siphon: req.body.finisher_siphon,
+            revive_speed: req.body.revive_speed,
+            hardware: req.body.hardware,
+            firewall: req.body.firewall,
+            fall_resistance: req.body.fall_resistance,
+            ping_duration: req.body.ping_duration
+        }
+
+        const updatedShell: any = await updateShellByNameService(name, updateShellRequest);
+        
+        if(updatedShell == false){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid "name" is required.`});
+        } else {
+            res.status(HTTP_STATUS.OK).json(successResponse(updatedShell, `Entity ${name} was updated`));
+        }
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
+    }
+}
