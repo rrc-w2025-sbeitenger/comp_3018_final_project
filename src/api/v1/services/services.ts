@@ -1,5 +1,5 @@
-import { promises } from "node:dns";
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
+import { updateWeapon } from "../controllers/controllers";
 import { Factions } from "../models/factionsModel";
 import { HealthCheckResponse } from "../models/healthCheckResponse";
 import { Shell } from "../models/shellModel";
@@ -94,14 +94,26 @@ export const getFactionByNameService = async (factionName: string): Promise<Fact
 }
 
 export const createShellService = async (shellCreateRequest: ShellRequest): Promise<Shell> => {
-    return await addShell(shellCreateRequest);
+    return await addShellDocument(shellCreateRequest);
 }
 
 export const createWeaponService = async (weaponCreateRequest: WeaponsRequest): Promise<Weapons> => {
-    return await addWeapon(weaponCreateRequest);
+    return await addWeaponDocument(weaponCreateRequest);
 }
 
 export const createFactionService = async (factionCreateRequest: Factions): Promise<Factions> => {
-    return await addFaction(factionCreateRequest);
+    return await addFactionDocument(factionCreateRequest);
 }
 
+//! update what promise is returned!
+export const updateShellByNameService = async(name:string, shellObject: Shell): Promise<any> => {
+    return await updateShellDocument(name, shellObject);
+}
+
+export const updateWeaponByNameService = async(name:string, weaponObject: Weapons): Promise<any> => {
+    return await updateWeaponDocument(name, weaponObject);
+}
+
+export const updateFactionByNameService = async(name:string, factionObject: Factions): Promise<any> => {
+    return await updateFactionDocument(name, factionObject);
+}
