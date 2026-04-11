@@ -4,6 +4,7 @@ import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
 import { Factions } from "../models/factionsModel";
 import { Shell } from "../models/shellModel";
+import { Weapons } from "../models/weaponsModel";
 
 export const getShellCollection = async (): Promise<ShellRequest[]> => {
     //Retrieve all documents from the 'shells' collection.
@@ -126,5 +127,34 @@ export const getShellDocument = async (shellName: string): Promise<Shell | null>
             firewall: data.firewall,
             fall_resistance: data.fall_resistance,
             ping_duration: data.ping_duration
+        };      
+};
+
+export const getWeaponDocument = async (weaponName: string): Promise<Weapons | null> => {
+    //doc() gets the shell document reference form firestore.
+    //get() uses that reference to fetch the document, returning DocumentSnapshot.
+    const weaponDocument: DocumentSnapshot = await (db.collection("weapons").doc(weaponName)).get();
+
+    //Check if the document exists.
+    if (!weaponDocument.exists) {
+        return null;
+    }
+        //get document fields.
+        const data: DocumentData | undefined = weaponDocument.data();
+
+        //data is returned as undefined.
+        if(!data){
+            return null;
+        }
+
+        return {
+            damage: data.damage,
+            precision_multiplier: data.precision_multiplier,
+            rate_of_fire: data.rate_of_fire,
+            ads_speed: data.ads_speed,
+            equip_speed: data.equip_speed,
+            reload_speed: data.reload_speed,
+            recoil: data.recoil, 
+            aim_assist: data.aim_assist,
         };      
 };
