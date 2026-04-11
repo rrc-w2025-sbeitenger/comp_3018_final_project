@@ -213,3 +213,37 @@ export const addShellDocument = async (createNewShell: ShellRequest): Promise<Sh
 
     return shellEntity;
 };
+
+export const addWeaponDocument = async (createNewWeapon: WeaponsRequest): Promise<Weapons> => {
+    //create a reference to a document in the 'weapons' collection.
+    //if the document doesn't exist, it will be created.
+    const weaponDocumentRef: DocumentReference = db.collection("weapons").doc(createNewWeapon.weapon_name);
+
+    //use the `set` method to add or overwrite data in the document.
+    //the data is passed as an object with fields and their values.
+    const weaponEntity: Weapons = {
+        damage: createNewWeapon.damage,
+        precision_multiplier: createNewWeapon.precision_multiplier,
+        rate_of_fire: createNewWeapon.rate_of_fire,
+        ads_speed: createNewWeapon.ads_speed,
+        equip_speed: createNewWeapon.equip_speed,
+        reload_speed: createNewWeapon.reload_speed,
+        recoil: createNewWeapon.recoil, 
+        aim_assist: createNewWeapon.aim_assist,
+    }
+
+    await weaponDocumentRef.set(weaponEntity);
+
+    return weaponEntity;
+};
+
+export const addFactionDocument = async (createNewFaction: Factions): Promise<Factions> => {
+    //create a reference to a document in the 'weapons' collection.
+    //if the document doesn't exist, it will be created.
+    const factionDocumentRef: DocumentReference = db.collection("factions").doc(createNewFaction.name);
+
+    await factionDocumentRef.set(createNewFaction);
+
+    return createNewFaction;
+};
+
