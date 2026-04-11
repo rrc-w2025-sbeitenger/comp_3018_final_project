@@ -268,3 +268,18 @@ export const updateFaction = async (req: Request, res:Response): Promise<void> =
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
     }
 }
+
+export const deleteShell = async (req: Request, res: Response): Promise<void> => {
+    try{
+        const shellName: string = String(req.params.name);
+        const deletedShell: DocumentData | null = await deleteShellService(shellName);
+
+        if(!deletedShell){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid shell name is required.`});
+        }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(deletedShell, `Document ${shellName} was deleted`));
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: `Internal Server Error`});
+    }
+}

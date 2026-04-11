@@ -37,7 +37,6 @@ export const getHealthStatusService = (): HealthCheckResponse => {
 }
 
 export const getAllShellsService = async (): Promise<ShellRequest[]> => {
-    //call repositories.
     return await getShellCollection();
 }
 

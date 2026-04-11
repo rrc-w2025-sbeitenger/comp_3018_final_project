@@ -14,6 +14,7 @@ import { getHealthCheck,
                      updateFaction,
                       deleteShell,
                        deleteWeapon,
+                        deleteFaction
                   } from "../controllers/controllers";
 
 const router:Router = express.Router();
@@ -63,6 +64,7 @@ router.put("/weapons/:name", updateWeapon);
 router.put("/factions/:name", updateFaction);
 router.delete("/shells/:name", deleteShell);
 router.delete("/weapons/:name", deleteWeapon);
+router.delete("/factions/:name", deleteFaction);
 //!add put routes later and admin routes
 
 export default router;
