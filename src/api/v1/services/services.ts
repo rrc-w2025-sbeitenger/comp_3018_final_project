@@ -36,12 +36,12 @@ export const getHealthStatusService = (): HealthCheckResponse => {
     };
 }
 
-export const getAllShellsService = async (): Promise<Shell[]> => {
+export const getAllShellsService = async (): Promise<ShellRequest[]> => {
     //call repositories.
     return await getShellCollection();
 }
 
-export const getAllWeaponsService = async (): Promise<Weapons[]> => {
+export const getAllWeaponsService = async (): Promise<WeaponsRequest[]> => {
     return await getWeaponCollection();
 }
 
