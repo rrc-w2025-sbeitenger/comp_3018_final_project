@@ -1,11 +1,12 @@
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
-import { updateWeapon } from "../controllers/controllers";
+//import { updateWeapon } from "../controllers/controllers";
 import { Factions } from "../models/factionsModel";
 import { HealthCheckResponse } from "../models/healthCheckResponse";
 import { Shell } from "../models/shellModel";
 import { ShellRequest } from "../models/shellRequest";
 import { Weapons } from "../models/weaponsModel";
 import { WeaponsRequest } from "../models/weaponsRequest";
+import { getShellCollection, getWeaponCollection, getFactionsCollection, getShellDocument } from "../repositories/repositories";
 
 /**
  * returns healthCheck server status.
@@ -20,12 +21,11 @@ export const getHealthStatusService = (): HealthCheckResponse => {
     };
 }
 
-export const getAllShellsService = async (): Promise<Shell[]> => {
-    //call repositories.
+export const getAllShellsService = async (): Promise<ShellRequest[]> => {
     return await getShellCollection();
 }
 
-export const getAllWeaponsService = async (): Promise<Weapons[]> => {
+export const getAllWeaponsService = async (): Promise<WeaponsRequest[]> => {
     return await getWeaponCollection();
 }
 
@@ -33,30 +33,30 @@ export const getAllFactionsService = async (): Promise<Factions[]> => {
     return await getFactionsCollection();
 }
 
-export const getShellByNameService = async (shellName: string): Promise<Shell | false> => {
-    const entity: Shell | false = await getShellById(shellName);
+export const getShellByNameService = async (shellName: string): Promise<Shell | null> => {
+    const shellEntity: Shell | null = await getShellDocument(shellName);
 
-    if(!entity){
-        return false;
+    if(!shellEntity){
+        return null;
     } else {
         return {
-            prime: entity.prime,
-            tactical: entity.tactical,
-            trait_1: entity.trait_1,
-            trait_2: entity.trait_2, 
-            heat_capacity: entity.heat_capacity,
-            agility: entity.agility,
-            loot_speed: entity.loot_speed,
-            melee_damage: entity.melee_damage,
-            prime_recovery: entity.prime_recovery,
-            tactical_recovery: entity.tactical_recovery,
-            self_repair_speed: entity.self_repair_speed,
-            finisher_siphon: entity.finisher_siphon,
-            revive_speed: entity.revive_speed,
-            hardware: entity.hardware,
-            firewall: entity.firewall,
-            fall_resistance: entity.fall_resistance,
-            ping_duration: entity.ping_duration
+            prime: shellEntity.prime,
+            tactical: shellEntity.tactical,
+            trait_1: shellEntity.trait_1,
+            trait_2: shellEntity.trait_2, 
+            heat_capacity: shellEntity.heat_capacity,
+            agility: shellEntity.agility,
+            loot_speed: shellEntity.loot_speed,
+            melee_damage: shellEntity.melee_damage,
+            prime_recovery: shellEntity.prime_recovery,
+            tactical_recovery: shellEntity.tactical_recovery,
+            self_repair_speed: shellEntity.self_repair_speed,
+            finisher_siphon: shellEntity.finisher_siphon,
+            revive_speed: shellEntity.revive_speed,
+            hardware: shellEntity.hardware,
+            firewall: shellEntity.firewall,
+            fall_resistance: shellEntity.fall_resistance,
+            ping_duration: shellEntity.ping_duration
         }
     }
 }

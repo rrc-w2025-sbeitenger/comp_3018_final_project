@@ -34,7 +34,7 @@ export const getHealthCheck = (req: Request, res: Response): void => {
 //GET ALL
 export const getAllShells = async (req: Request, res:Response): Promise<void> => {
     try {
-        const getAllShellsResult: Shell[] = await getAllShellsService();
+        const getAllShellsResult: ShellRequest[] = await getAllShellsService();
         res.status(HTTP_STATUS.OK).json(successResponse(getAllShellsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
@@ -43,7 +43,7 @@ export const getAllShells = async (req: Request, res:Response): Promise<void> =>
 
 export const getAllWeapons = async (req: Request, res:Response): Promise<void> => {
     try {
-        const getAllWeaponsResult: Weapons[] = await getAllWeaponsService();
+        const getAllWeaponsResult: WeaponsRequest[] = await getAllWeaponsService();
         res.status(HTTP_STATUS.OK).json(successResponse(getAllWeaponsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
@@ -63,9 +63,9 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
 export const getShellByName = async (req:Request, res:Response): Promise<void> => {
     try{
         const shellName: string = String(req.params.name);
-        const selectedShell: Shell | false = await getShellByNameService(shellName);
+        const selectedShell: Shell | null = await getShellByNameService(shellName);
 
-        if(selectedShell == false){
+        if(!selectedShell){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
             return;
         } else {
