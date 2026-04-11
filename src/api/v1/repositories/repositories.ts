@@ -373,3 +373,21 @@ export const deleteWeaponDocument = async (weaponName:string): Promise<DocumentD
     //return the delete data.
     return weaponDocument.data()!;
 };
+
+export const deleteFactionDocument = async (factionName:string): Promise<DocumentData | null> => {
+    //Create a reference to a specific document in the 'shells' collection.
+    const factionDocumentRef: DocumentReference = db.collection("factions").doc(factionName);
+
+    //get() to retrieve the document.
+    const factionDocument: DocumentSnapshot = await factionDocumentRef.get();
+
+    if(!factionDocument.exists){
+        return null;
+    }
+
+    //delete() to remove the document from Firestore.
+    await factionDocumentRef.delete();
+
+    //return the delete data.
+    return factionDocument.data()!;
+};
