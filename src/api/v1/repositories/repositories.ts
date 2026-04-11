@@ -314,3 +314,26 @@ export const updateWeaponDocument = async (weaponName:string, weaponObject: Weap
     //data() to view the actual document.
     return updatedDocument.data()!;
 };
+
+export const updateFactionDocument = async (factionName:string, factionObject: Factions): Promise<DocumentData | null> => {
+    //doc() gets the shell document reference form firestore.
+    const factionDocumentRef: DocumentReference = db.collection("factions").doc(factionName);
+    //get() uses that reference to fetch the document, returning DocumentSnapshot.
+    const factionDocument: DocumentSnapshot = await factionDocumentRef.get();
+    
+    if(!factionDocument.exists){
+        return null;
+    }
+    
+    //update() modifies specific fields in the document.
+    //This will only change the specified fields leaving others untouched.
+    await factionDocumentRef.update({
+        name: factionObject.name,
+        lore: factionObject.lore
+    });
+
+    //get updated doc snapshot.
+    const updatedDocument: DocumentSnapshot = await factionDocumentRef.get();
+    //data() to view the actual document.
+    return updatedDocument.data()!;
+};
