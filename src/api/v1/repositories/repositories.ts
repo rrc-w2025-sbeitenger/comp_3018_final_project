@@ -285,3 +285,32 @@ export const updateShellDocument = async (shellName:string, shellObject: Shell):
     //data() to view the actual document.
     return updatedDocument.data()!;
 };
+
+export const updateWeaponDocument = async (weaponName:string, weaponObject: Weapons): Promise<DocumentData | null> => {
+    //doc() gets the shell document reference form firestore.
+    const weaponsDocumentRef: DocumentReference = db.collection("weapons").doc(weaponName);
+    //get() uses that reference to fetch the document, returning DocumentSnapshot.
+    const weaponsDocument: DocumentSnapshot = await weaponsDocumentRef.get();
+    
+    if(!weaponsDocument.exists){
+        return null;
+    }
+    
+    //update() modifies specific fields in the document.
+    //This will only change the specified fields leaving others untouched.
+    await weaponsDocumentRef.update({
+        damage: weaponObject.damage,
+        precision_multiplier: weaponObject.precision_multiplier,
+        rate_of_fire: weaponObject.rate_of_fire,
+        ads_speed: weaponObject.ads_speed,
+        equip_speed: weaponObject.equip_speed,
+        reload_speed: weaponObject.reload_speed,
+        recoil: weaponObject.recoil, 
+        aim_assist: weaponObject.aim_assist,
+    });
+
+    //get updated doc snapshot.
+    const updatedDocument: DocumentSnapshot = await weaponsDocumentRef.get();
+    //data() to view the actual document.
+    return updatedDocument.data()!;
+};
