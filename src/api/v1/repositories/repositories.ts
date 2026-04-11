@@ -2,6 +2,7 @@ import { db } from "../../../config/firebaseConfig";
 import { QuerySnapshot, DocumentData } from "firebase-admin/firestore";
 import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
+import { Factions } from "../models/factionsModel";
 
 export const getShellCollection = async (): Promise<ShellRequest[]> => {
     //Retrieve all documents from the 'shells' collection.
@@ -66,4 +67,25 @@ export const getWeaponCollection = async (): Promise<WeaponsRequest[]> => {
     });
 
     return weaponsArray;
+}
+
+export const getFactionsCollection = async (): Promise<Factions[]> => {
+    //Retrieve all documents from the 'factions' collection.
+    //get() returns a QuerySnapshot containing all documents in the collection.
+    const factionsSnapshot: QuerySnapshot = await db.collection("factions").get();
+
+    //array of factions.
+    const factionsArray: Factions[] = [];
+
+    //itreate through each document in the collection.
+    factionsSnapshot.forEach((document) => {
+        //get document properties.
+        const data: DocumentData = document.data();
+        factionsArray.push({
+            name: data.name,
+            lore: data.lore,
+        });
+    });
+
+    return factionsArray;
 }
