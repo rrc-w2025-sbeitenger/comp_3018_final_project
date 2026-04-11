@@ -337,3 +337,21 @@ export const updateFactionDocument = async (factionName:string, factionObject: F
     //data() to view the actual document.
     return updatedDocument.data()!;
 };
+
+export const deleteShellDocument = async (shellName:string): Promise<DocumentData | null> => {
+    //Create a reference to a specific document in the 'shells' collection.
+    const shellDocumentRef: DocumentReference = db.collection("shells").doc(shellName);
+
+    //get() to retrieve the document.
+    const shellDocument: DocumentSnapshot = await shellDocumentRef.get();
+
+    if(!shellDocument.exists){
+        return null;
+    }
+
+    //delete() to remove the document from Firestore.
+    await shellDocumentRef.delete();
+
+    //return the delete data.
+    return shellDocument.data()!;
+};
