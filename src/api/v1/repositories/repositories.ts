@@ -246,4 +246,3 @@ export const addFactionDocument = async (createNewFaction: Factions): Promise<Fa
 
     return createNewFaction;
 };
-
