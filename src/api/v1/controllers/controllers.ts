@@ -5,6 +5,7 @@ import { HealthCheckResponse } from "../models/healthCheckResponse";
 import { Shell } from "../models/shellModel";
 import { Weapons } from "../models/weaponsModel";
 import { Factions } from "../models/factionsModel";
+import { DocumentData } from "node_modules/firebase-admin/lib/firestore";
 import { getHealthStatusService,
           getAllShellsService,
            getAllWeaponsService,
@@ -17,7 +18,11 @@ import { getHealthStatusService,
                   createFactionService,
                    updateFactionByNameService,
                     updateShellByNameService,
-                     updateWeaponByNameService } from "../services/services";
+                     updateWeaponByNameService,
+                      deleteShellService,
+                       deleteWeaponService,
+                        deleteFactionService
+                     } from "../services/services";
 import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
 
@@ -34,7 +39,7 @@ export const getHealthCheck = (req: Request, res: Response): void => {
 //GET ALL
 export const getAllShells = async (req: Request, res:Response): Promise<void> => {
     try {
-        const getAllShellsResult: Shell[] = await getAllShellsService();
+        const getAllShellsResult: ShellRequest[] = await getAllShellsService();
         res.status(HTTP_STATUS.OK).json(successResponse(getAllShellsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
@@ -43,7 +48,7 @@ export const getAllShells = async (req: Request, res:Response): Promise<void> =>
 
 export const getAllWeapons = async (req: Request, res:Response): Promise<void> => {
     try {
-        const getAllWeaponsResult: Weapons[] = await getAllWeaponsService();
+        const getAllWeaponsResult: WeaponsRequest[] = await getAllWeaponsService();
         res.status(HTTP_STATUS.OK).json(successResponse(getAllWeaponsResult));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
@@ -63,14 +68,15 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
 export const getShellByName = async (req:Request, res:Response): Promise<void> => {
     try{
         const shellName: string = String(req.params.name);
-        const selectedShell: Shell | false = await getShellByNameService(shellName);
+        const selectedShell: Shell | null = await getShellByNameService(shellName);
 
-        if(selectedShell == false){
+        if(!selectedShell){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
             return;
-        } else {
-            res.status(HTTP_STATUS.OK).json(selectedShell);
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(selectedShell));
+        
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
@@ -79,14 +85,15 @@ export const getShellByName = async (req:Request, res:Response): Promise<void> =
 export const getWeaponByName = async (req: Request, res:Response): Promise<void> => {
     try{
         const weaponName: string = String(req.params.name);
-        const selectedWeapon: Weapons | false = await getWeaponByNameService(weaponName);
+        const selectedWeapon: Weapons | null = await getWeaponByNameService(weaponName);
 
-        if(selectedWeapon == false){
+        if(!selectedWeapon){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
             return;
-        } else {
-            res.status(HTTP_STATUS.OK).json(selectedWeapon);
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(selectedWeapon));
+
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
@@ -95,14 +102,15 @@ export const getWeaponByName = async (req: Request, res:Response): Promise<void>
 export const getFactionByName = async (req: Request, res:Response): Promise<void> => {
     try{
         const factionName: string = String(req.params.name);
-        const selectedFaction: Factions | false = await getFactionByNameService(factionName);
+        const selectedFaction: Factions | null = await getFactionByNameService(factionName);
 
-        if(selectedFaction == false){
+        if(!selectedFaction){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: "Not Found."});
             return;
-        } else {
-            res.status(HTTP_STATUS.OK).json(selectedFaction);
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(selectedFaction));
+        
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Interal Server Error"});
     }
@@ -112,7 +120,7 @@ export const getFactionByName = async (req: Request, res:Response): Promise<void
 export const createShell = async (req: Request, res: Response): Promise<void> => {
     try{
         const shellCreateRequest: ShellRequest = {
-            shell_name: req.body.name,
+            shell_name: req.body.shell_name,
             prime: req.body.prime,
             tactical: req.body.tactical,
             trait_1: req.body.trait_1,
@@ -133,7 +141,7 @@ export const createShell = async (req: Request, res: Response): Promise<void> =>
     }
     
         const newShell: Shell = await createShellService(shellCreateRequest);
-        res.status(HTTP_STATUS.CREATED).json(newShell);
+        res.status(HTTP_STATUS.CREATED).json(successResponse(newShell));
 
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
@@ -151,25 +159,25 @@ export const createWeapon = async (req: Request, res: Response): Promise<void> =
             precision_multiplier: Number(req.body.precision_multiplier),
             rate_of_fire: req.body.rate_of_fire,
             recoil:  req.body.recoil,
-            reload_speed: req.body.reload
+            reload_speed: req.body.reload_speed
     }
 
-        const newWeapon: Weapons = createWeaponService(weaponCreateRequest)
-        res.status(HTTP_STATUS.CREATED).json(newWeapon);
+        const newWeapon: Weapons = await createWeaponService(weaponCreateRequest)
+        res.status(HTTP_STATUS.CREATED).json(successResponse(newWeapon));
 
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
     }
 }
 
-export const createFaction = (req: Request, res: Response): void => {
+export const createFaction = async (req: Request, res: Response): Promise<void> => {
     try{
         const factionCreateRequest: Factions = {
             lore: req.body.lore,
             name: req.body.name
     }
-        const newFaction: Factions = createFactionService(factionCreateRequest)
-        res.status(HTTP_STATUS.CREATED).json(newFaction);
+        const newFaction: Factions = await createFactionService(factionCreateRequest)
+        res.status(HTTP_STATUS.CREATED).json(successResponse(newFaction));
         
     }catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
@@ -179,7 +187,7 @@ export const createFaction = (req: Request, res: Response): void => {
 //PUT
 export const updateShell = async (req: Request, res:Response): Promise<void> => {
     try{
-        const name: string = String(req.params.name);
+        const shellName: string = String(req.params.name);
         const updateShellRequest: Shell = {
             prime: req.body.prime,
             tactical: req.body.tactical,
@@ -200,13 +208,14 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
             ping_duration: req.body.ping_duration
         }
 
-        const updatedShell: any = await updateShellByNameService(name, updateShellRequest);
+        const updatedShell: DocumentData | null = await updateShellByNameService(shellName, updateShellRequest);
         
-        if(updatedShell == false){
+        if(!updatedShell){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid shell name is required.`});
-        } else {
-            res.status(HTTP_STATUS.OK).json(successResponse(updatedShell, `Entity ${name} was updated`));
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(updatedShell, `Document ${shellName} was updated.`));
+        
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
     }
@@ -214,7 +223,7 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
 
 export const updateWeapon = async (req: Request, res:Response): Promise<void> => {
     try{
-        const name: string = String(req.params.name);
+        const weaponName: string = String(req.params.name);
         const updateWeaponRequest: Weapons = {
             ads_speed: req.body.ads_speed,
             aim_assist: Number(req.body.aim_assist),
@@ -222,17 +231,18 @@ export const updateWeapon = async (req: Request, res:Response): Promise<void> =>
             equip_speed: req.body.equip_speed,
             precision_multiplier: Number(req.body.precision_multiplier),
             rate_of_fire: req.body.rate_of_fire,
-            recoil:  req.body.recoil,
-            reload_speed: req.body.reload
+            recoil: req.body.recoil,
+            reload_speed: req.body.reload_speed
         }
 
-        const updatedWeapon: any = await updateWeaponByNameService(name, updateWeaponRequest);
+        const updatedWeapon: DocumentData | null = await updateWeaponByNameService(weaponName, updateWeaponRequest);
         
-        if(updatedWeapon == false){
+        if(!updatedWeapon){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
-        } else {
-            res.status(HTTP_STATUS.OK).json(successResponse(updatedWeapon, `Entity ${name} was updated`));
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(updatedWeapon, `Document ${weaponName} was updated`));
+
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
     }
@@ -250,9 +260,10 @@ export const updateFaction = async (req: Request, res:Response): Promise<void> =
         
         if(updatedFaction == false){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid faction name is required.`});
-        } else {
-            res.status(HTTP_STATUS.OK).json(successResponse(updatedFaction, `Entity ${name} was updated`));
         }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(updatedFaction, `Document ${name} was updated`));
+
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"});
     }
