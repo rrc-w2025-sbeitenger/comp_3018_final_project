@@ -181,3 +181,35 @@ export const getFactionDocument = async (factionName: string): Promise<Factions 
             lore: data.lore,
         };      
 };
+
+export const addShellDocument = async (createNewShell: ShellRequest): Promise<Shell> => {
+    //create a reference to a document in the 'shells' collection.
+    //if the document doesn't exist, it will be created.
+    const shellDocumentRef: DocumentReference = db.collection("shells").doc(createNewShell.shell_name);
+
+    //use the `set` method to add or overwrite data in the document.
+    //the data is passed as an object with fields and their values.
+    const shellEntity: Shell = {
+        prime: createNewShell.prime,
+        tactical: createNewShell.tactical,
+        trait_1: createNewShell.trait_1,
+        trait_2: createNewShell.trait_2, 
+        heat_capacity: createNewShell.heat_capacity,
+        agility: createNewShell.agility,
+        loot_speed: createNewShell.loot_speed,
+        melee_damage: createNewShell.melee_damage,
+        prime_recovery: createNewShell.prime_recovery,
+        tactical_recovery: createNewShell.tactical_recovery,
+        self_repair_speed: createNewShell.self_repair_speed,
+        finisher_siphon: createNewShell.finisher_siphon,
+        revive_speed: createNewShell.revive_speed,
+        hardware: createNewShell.hardware,
+        firewall: createNewShell.firewall,
+        fall_resistance: createNewShell.fall_resistance,
+        ping_duration: createNewShell.ping_duration
+    }
+
+    await shellDocumentRef.set(shellEntity);
+
+    return shellEntity;
+};
