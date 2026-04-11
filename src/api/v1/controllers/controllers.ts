@@ -298,3 +298,18 @@ export const deleteWeapon = async (req: Request, res: Response): Promise<void> =
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: `Internal Server Error`});
     }
 }
+
+export const deleteFaction = async (req: Request, res: Response): Promise<void> => {
+    try{
+        const factionName: string = String(req.params.name);
+        const deletedFaction: DocumentData | null = await deleteFactionService(factionName);
+
+        if(!deletedFaction){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
+        }
+
+        res.status(HTTP_STATUS.OK).json(successResponse(deletedFaction, `Document ${factionName} was deleted`));
+    } catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: `Internal Server Error`});
+    }
+}
