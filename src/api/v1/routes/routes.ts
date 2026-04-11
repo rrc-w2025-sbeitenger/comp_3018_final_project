@@ -8,7 +8,13 @@ import { getHealthCheck,
                getFactionByName,
                 createShell,
                  createWeapon,
-                  createFaction} from "../controllers/controllers";
+                  createFaction,
+                   updateShell,
+                    updateWeapon,
+                     updateFaction,
+                      deleteShell,
+                       deleteWeapon,
+                  } from "../controllers/controllers";
 
 const router:Router = express.Router();
 
@@ -50,8 +56,13 @@ router.get("/shells/:name", getShellByName);
 router.get("/weapons/:name", getWeaponByName);
 router.get("/factions/:name", getFactionByName);
 router.post("/shells", createShell);
-router.post("/shells", createWeapon);
-router.post("/shells", createFaction);
+router.post("/weapons", createWeapon);
+router.post("/factions", createFaction);
+router.put("/shells/:name", updateShell);
+router.put("/weapons/:name", updateWeapon);
+router.put("/factions/:name", updateFaction);
+router.delete("/shells/:name", deleteShell);
+router.delete("/weapons/:name", deleteWeapon);
 //!add put routes later and admin routes
 
 export default router;
