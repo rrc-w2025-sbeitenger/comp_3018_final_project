@@ -147,6 +147,36 @@ router.get("/shells", getAllShells);
  *         description: Internal server error
  */
 router.get("/weapons", getAllWeapons);
+
+/**
+ * @openapi
+ * /factions:
+ *   get:
+ *     summary: Retrieve all factions
+ *     tags: [Factions]
+ *     responses:
+ *       '200':
+ *         description: A list of factions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Factions'
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 name: "CYBERACME"
+ *                 lore: "The industry leader in AI."
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/factions", getAllFactions);
 router.get("/shells/:name", getShellByName);
 router.get("/weapons/:name", getWeaponByName);
