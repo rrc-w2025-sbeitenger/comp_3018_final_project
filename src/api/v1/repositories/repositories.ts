@@ -400,3 +400,15 @@ export const addMapImageDocument = async (mapData:any): Promise<any> => {
 
     return mapData;
 }
+
+export const getMapDocument = async (mapName: string): Promise<DocumentData | null> => {
+    //Create a reference to a specific document in the 'maps' collection.
+    const mapDocumentRef: DocumentReference = db.collection("maps").doc(mapName);
+    const mapDocument: DocumentData = await mapDocumentRef.get();
+
+    if(!mapDocument){
+        return null;
+    }
+
+    return mapDocument.data();
+}
