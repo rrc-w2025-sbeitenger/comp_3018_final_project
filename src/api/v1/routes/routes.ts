@@ -746,6 +746,40 @@ router.delete("/shells/:name", deleteShell);
  *         description: Internal server error
  */
 router.delete("/weapons/:name", deleteWeapon);
+
+/**
+ * @openapi
+ * /factions/{name}:
+ *   delete:
+ *     summary: Delete a faction by name
+ *     tags: [Factions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The faction name
+ *     responses:
+ *       '200':
+ *         description: Faction deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document CYBERACME was deleted"
+ *               data:
+ *                 name: "CYBERACME"
+ *                 lore: "The industry leader in AI."
+ *       '404':
+ *         description: Faction not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid faction name is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.delete("/factions/:name", deleteFaction);
 //!add put routes later and admin routes
 
