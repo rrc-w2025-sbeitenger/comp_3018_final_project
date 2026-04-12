@@ -705,6 +705,46 @@ router.put("/factions/:name", updateFaction);
  *         description: Internal server error
  */
 router.delete("/shells/:name", deleteShell);
+
+/**
+ * @openapi
+ * /weapons/{name}:
+ *   delete:
+ *     summary: Delete a weapon by name
+ *     tags: [Weapons]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The weapon name
+ *     responses:
+ *       '200':
+ *         description: Weapon deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document Bully SMG was deleted"
+ *               data:
+ *                 damage: 45
+ *                 precision_multiplier: 1.5
+ *                 rate_of_fire: "100 RPM"
+ *                 ads_speed: "0.9s"
+ *                 equip_speed: "0.8s"
+ *                 reload_speed: "1.0s"
+ *                 recoil: "Low"
+ *                 aim_assist: 70
+ *       '404':
+ *         description: Weapon not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid weapon name is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.delete("/weapons/:name", deleteWeapon);
 router.delete("/factions/:name", deleteFaction);
 //!add put routes later and admin routes
