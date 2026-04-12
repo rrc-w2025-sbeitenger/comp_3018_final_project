@@ -22,6 +22,7 @@ import { getShellCollection,
                    deleteWeaponDocument,
                     deleteFactionDocument,
                      addMapImageDocument,
+                      getMapDocument
                 } from "../repositories/repositories";
 
 /**
@@ -102,14 +103,18 @@ export const deleteFactionService = async(factionName: string): Promise<Document
 export const createMapService = async(mapImage: Express.Multer.File | undefined, mapName: string): Promise<any> => {
     //! currently storing in Firestore as base64 since I am unable to create a Firestore Storage because of region.
     //! this will be fixed once the issue has been resolved.
+    //convert binary to text, since we can't store the raw image in firestore.
     const base64MapImage: string = mapImage!.buffer.toString("base64");
-    const mapImageData: string = `data:${mapImage!.mimetype};base64,${base64MapImage}`;
-
+    
     const mapData = {
         map_name: mapName,
-        map_image: mapImageData
+        map_image: base64MapImage
     }
 
     return await addMapImageDocument(mapData);
     
+}
+
+export const getMapService = async(mapName: string): Promise<DocumentData | null> => {
+    return await getMapDocument(mapName);
 }

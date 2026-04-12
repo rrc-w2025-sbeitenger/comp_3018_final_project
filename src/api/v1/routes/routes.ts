@@ -1,4 +1,5 @@
 import express, { Router } from "express";
+import { upload } from "../middleware/multer";
 import { getHealthCheck,
           getAllShells,
            getAllWeapons,
@@ -14,7 +15,9 @@ import { getHealthCheck,
                      updateFaction,
                       deleteShell,
                        deleteWeapon,
-                        deleteFaction
+                        deleteFaction,
+                        createMap,
+                        getMap
                   } from "../controllers/controllers";
 
 const router:Router = express.Router();
@@ -56,9 +59,11 @@ router.get("/factions", getAllFactions);
 router.get("/shells/:name", getShellByName);
 router.get("/weapons/:name", getWeaponByName);
 router.get("/factions/:name", getFactionByName);
+router.get("/maps/:name", getMap);
 router.post("/shells", createShell);
 router.post("/weapons", createWeapon);
 router.post("/factions", createFaction);
+router.post("/maps", upload.single('map_image'), createMap);
 router.put("/shells/:name", updateShell);
 router.put("/weapons/:name", updateWeapon);
 router.put("/factions/:name", updateFaction);
