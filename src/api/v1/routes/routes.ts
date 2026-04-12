@@ -407,6 +407,38 @@ router.get("/maps/:name", getMap);
  *         description: Internal server error
  */
 router.post("/shells", createShell);
+
+/**
+ * @openapi
+ * /weapons:
+ *   post:
+ *     summary: Create a new weapon
+ *     tags: [Weapons]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Weapons'
+ *     responses:
+ *       '201':
+ *         description: Weapon created successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 damage: 45
+ *                 precision_multiplier: 1.5
+ *                 rate_of_fire: "100 RPM"
+ *                 ads_speed: "0.9s"
+ *                 equip_speed: "0.8s"
+ *                 reload_speed: "1.0s"
+ *                 recoil: "Low"
+ *                 aim_assist: 70
+ *       '500':
+ *         description: Internal server error
+ */
 router.post("/weapons", createWeapon);
 router.post("/factions", createFaction);
 router.post("/maps", upload.single('map_image'), createMap);
