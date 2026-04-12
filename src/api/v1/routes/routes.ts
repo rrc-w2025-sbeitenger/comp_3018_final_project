@@ -328,6 +328,41 @@ router.get("/weapons/:name", getWeaponByName);
  */
 
 router.get("/factions/:name", getFactionByName);
+
+/**
+ * @openapi
+ * /maps/{name}:
+ *   get:
+ *     summary: Retrieve a map image by name
+ *     tags: [Maps]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The map name
+ *     responses:
+ *       '200':
+ *         description: The map image file
+ *         content:
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       '404':
+ *         description: Map not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid map is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/maps/:name", getMap);
 router.post("/shells", createShell);
 router.post("/weapons", createWeapon);
