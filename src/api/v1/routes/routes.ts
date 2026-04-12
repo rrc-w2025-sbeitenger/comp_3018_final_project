@@ -109,6 +109,43 @@ router.get("/health", getHealthCheck);
  *         description: Internal server error
  */
 router.get("/shells", getAllShells);
+
+/**
+ * @openapi
+ * /weapons:
+ *   get:
+ *     summary: Retrieve all weapons
+ *     tags: [Weapons]
+ *     responses:
+ *       '200':
+ *         description: A list of weapons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Weapons'
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 weapon_name: "Bully SMG"
+ *                 damage: 45
+ *                 precision_multiplier: 1.5
+ *                 rate_of_fire: "100 RPM"
+ *                 ads_speed: "0.9s"
+ *                 equip_speed: "0.8s"
+ *                 reload_speed: "1.0s"
+ *                 recoil: "Low"
+ *                 aim_assist: 70
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/weapons", getAllWeapons);
 router.get("/factions", getAllFactions);
 router.get("/shells/:name", getShellByName);
