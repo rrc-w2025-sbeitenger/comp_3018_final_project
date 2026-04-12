@@ -22,7 +22,8 @@ import { getHealthStatusService,
                       deleteShellService,
                        deleteWeaponService,
                         deleteFactionService,
-                        createMapService
+                        createMapService,
+                         getMapService
                      } from "../services/services";
 import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
@@ -214,6 +215,7 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
         
         if(!updatedShell){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid shell name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(updatedShell, `Document ${shellName} was updated.`));
@@ -241,6 +243,7 @@ export const updateWeapon = async (req: Request, res:Response): Promise<void> =>
         
         if(!updatedWeapon){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(updatedWeapon, `Document ${weaponName} was updated`));
@@ -258,10 +261,11 @@ export const updateFaction = async (req: Request, res:Response): Promise<void> =
             name: req.body.name
         }
 
-        const updatedFaction: any = await updateFactionByNameService(name, updateFactionRequest);
+        const updatedFaction: DocumentData | null = await updateFactionByNameService(name, updateFactionRequest);
         
-        if(updatedFaction == false){
+        if(!updatedFaction){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid faction name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(updatedFaction, `Document ${name} was updated`));
@@ -278,6 +282,7 @@ export const deleteShell = async (req: Request, res: Response): Promise<void> =>
 
         if(!deletedShell){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid shell name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(deletedShell, `Document ${shellName} was deleted`));
@@ -293,6 +298,7 @@ export const deleteWeapon = async (req: Request, res: Response): Promise<void> =
 
         if(!deletedWeapon){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(deletedWeapon, `Document ${weaponName} was deleted`));
@@ -308,6 +314,7 @@ export const deleteFaction = async (req: Request, res: Response): Promise<void> 
 
         if(!deletedFaction){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});
+            return;
         }
 
         res.status(HTTP_STATUS.OK).json(successResponse(deletedFaction, `Document ${factionName} was deleted`));
@@ -328,6 +335,27 @@ export const createMap = async (req: Request, res: Response): Promise<void> => {
 
         const createdMap = await createMapService(mapImage, mapName);
         res.status(HTTP_STATUS.CREATED).json(successResponse(createdMap, `Document ${mapName} was created.`));
+
+    }catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
+    }
+}
+
+export const getMap = async (req: Request, res: Response): Promise<void> => {
+    try{
+        const mapName: string = String(req.params.name);
+        const map: DocumentData | null = await getMapService(mapName);
+
+        if(!map){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid map is required.`});
+            return;
+        }
+
+        //converts text into binary
+        const imageBuffer = Buffer.from(map.map_image, 'base64');
+
+        res.set('Content-Type', 'image/png');
+        res.send(imageBuffer);
 
     }catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
