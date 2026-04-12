@@ -178,6 +178,63 @@ router.get("/weapons", getAllWeapons);
  *         description: Internal server error
  */
 router.get("/factions", getAllFactions);
+
+/**
+ * @openapi
+ * /shells/{name}:
+ *   get:
+ *     summary: Retrieve a shell by name
+ *     tags: [Shells]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The shell name
+ *     responses:
+ *       '200':
+ *         description: The requested shell
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   $ref: '#/components/schemas/Shell'
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 shell_name: "Assassin"
+ *                 prime: "Overshield"
+ *                 tactical: "Smoke Grenade"
+ *                 trait_1: "Resilience"
+ *                 trait_2: "Swift"
+ *                 heat_capacity: 100
+ *                 agility: 85
+ *                 loot_speed: 75
+ *                 melee_damage: 50
+ *                 prime_recovery: 30
+ *                 tactical_recovery: 20
+ *                 self_repair_speed: 40
+ *                 finisher_siphon: 15
+ *                 revive_speed: 60
+ *                 hardware: 90
+ *                 firewall: 80
+ *                 fall_resistance: 70
+ *                 ping_duration: 25
+ *       '404':
+ *         description: Shell not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Not Found."
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/shells/:name", getShellByName);
 router.get("/weapons/:name", getWeaponByName);
 router.get("/factions/:name", getFactionByName);
