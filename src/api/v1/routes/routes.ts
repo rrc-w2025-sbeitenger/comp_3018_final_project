@@ -655,6 +655,55 @@ router.put("/weapons/:name", updateWeapon);
  *         description: Internal server error
  */
 router.put("/factions/:name", updateFaction);
+
+/**
+ * @openapi
+ * /shells/{name}:
+ *   delete:
+ *     summary: Delete a shell by name
+ *     tags: [Shells]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The shell name
+ *     responses:
+ *       '200':
+ *         description: Shell deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document Assassin was deleted"
+ *               data:
+ *                 prime: "Overshield"
+ *                 tactical: "Smoke Grenade"
+ *                 trait_1: "Resilience"
+ *                 trait_2: "Swift"
+ *                 heat_capacity: 100
+ *                 agility: 85
+ *                 loot_speed: 75
+ *                 melee_damage: 50
+ *                 prime_recovery: 30
+ *                 tactical_recovery: 20
+ *                 self_repair_speed: 40
+ *                 finisher_siphon: 15
+ *                 revive_speed: 60
+ *                 hardware: 90
+ *                 firewall: 80
+ *                 fall_resistance: 70
+ *                 ping_duration: 25
+ *       '404':
+ *         description: Shell not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid shell name is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.delete("/shells/:name", deleteShell);
 router.delete("/weapons/:name", deleteWeapon);
 router.delete("/factions/:name", deleteFaction);
