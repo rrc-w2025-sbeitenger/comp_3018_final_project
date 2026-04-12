@@ -20,7 +20,8 @@ import { getShellCollection,
                   updateFactionDocument,
                   deleteShellDocument,
                    deleteWeaponDocument,
-                    deleteFactionDocument
+                    deleteFactionDocument,
+                     addMapImageDocument,
                 } from "../repositories/repositories";
 
 /**
@@ -74,26 +75,41 @@ export const createFactionService = async (factionCreateRequest: Factions): Prom
     return await addFactionDocument(factionCreateRequest);
 }
 
-export const updateShellByNameService = async(shellName:string, shellObject: Shell): Promise<DocumentData | null> => {
+export const updateShellByNameService = async(shellName: string, shellObject: Shell): Promise<DocumentData | null> => {
     return await updateShellDocument(shellName, shellObject);
 }
 
-export const updateWeaponByNameService = async(weaponName:string, weaponObject: Weapons): Promise<DocumentData | null> => {
+export const updateWeaponByNameService = async(weaponName: string, weaponObject: Weapons): Promise<DocumentData | null> => {
     return await updateWeaponDocument(weaponName, weaponObject);
 }
 
-export const updateFactionByNameService = async(factionName:string, factionObject: Factions): Promise<DocumentData | null> => {
+export const updateFactionByNameService = async(factionName: string, factionObject: Factions): Promise<DocumentData | null> => {
     return await updateFactionDocument(factionName, factionObject);
 }
 
-export const deleteShellService = async(shellName:string): Promise<DocumentData | null> => {
+export const deleteShellService = async(shellName: string): Promise<DocumentData | null> => {
     return await deleteShellDocument(shellName);
 }
 
-export const deleteWeaponService = async(weaponName:string): Promise<DocumentData | null> => {
+export const deleteWeaponService = async(weaponName: string): Promise<DocumentData | null> => {
     return await deleteWeaponDocument(weaponName);
 }
 
-export const deleteFactionService = async(factionName:string): Promise<DocumentData | null> => {
+export const deleteFactionService = async(factionName: string): Promise<DocumentData | null> => {
     return await deleteFactionDocument(factionName);
+}
+
+export const createMapService = async(mapImage: Express.Multer.File | undefined, mapName: string): Promise<any> => {
+    //! currently storing in Firestore as base64 since I am unable to create a Firestore Storage because of region.
+    //! this will be fixed once the issue has been resolved.
+    const base64MapImage: string = mapImage!.buffer.toString("base64");
+    const mapImageData: string = `data:${mapImage!.mimetype};base64,${base64MapImage}`;
+
+    const mapData = {
+        map_name: mapName,
+        map_image: mapImageData
+    }
+
+    return await addMapImageDocument(mapData);
+    
 }
