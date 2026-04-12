@@ -236,6 +236,54 @@ router.get("/factions", getAllFactions);
  *         description: Internal server error
  */
 router.get("/shells/:name", getShellByName);
+
+/**
+ * @openapi
+ * /weapons/{name}:
+ *   get:
+ *     summary: Retrieve a weapon by name
+ *     tags: [Weapons]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The weapon name
+ *     responses:
+ *       '200':
+ *         description: The requested weapon
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   $ref: '#/components/schemas/Weapons'
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 weapon_name: "Bully SMG"
+ *                 damage: 45
+ *                 precision_multiplier: 1.5
+ *                 rate_of_fire: "100 RPM"
+ *                 ads_speed: "0.9s"
+ *                 equip_speed: "0.8s"
+ *                 reload_speed: "1.0s"
+ *                 recoil: "Low"
+ *                 aim_assist: 70
+ *       '404':
+ *         description: Weapon not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Not Found."
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/weapons/:name", getWeaponByName);
 router.get("/factions/:name", getFactionByName);
 router.get("/maps/:name", getMap);
