@@ -21,7 +21,8 @@ import { getHealthStatusService,
                      updateWeaponByNameService,
                       deleteShellService,
                        deleteWeaponService,
-                        deleteFactionService
+                        deleteFactionService,
+                        createMapService
                      } from "../services/services";
 import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
@@ -175,7 +176,8 @@ export const createFaction = async (req: Request, res: Response): Promise<void> 
         const factionCreateRequest: Factions = {
             lore: req.body.lore,
             name: req.body.name
-    }
+        }
+
         const newFaction: Factions = await createFactionService(factionCreateRequest)
         res.status(HTTP_STATUS.CREATED).json(successResponse(newFaction));
         
@@ -311,5 +313,23 @@ export const deleteFaction = async (req: Request, res: Response): Promise<void> 
         res.status(HTTP_STATUS.OK).json(successResponse(deletedFaction, `Document ${factionName} was deleted`));
     } catch (error){
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({message: `Internal Server Error`});
+    }
+}
+
+export const createMap = async (req: Request, res: Response): Promise<void> => {
+    try{
+        if(!req.file){
+            res.status(HTTP_STATUS.NOT_FOUND).json({message: "Validation error: No image uploaded."})
+            return;
+        }
+
+        const mapImage: Express.Multer.File | undefined = req.file;
+        const mapName: string = req.body.map_name;
+
+        const createdMap = await createMapService(mapImage, mapName);
+        res.status(HTTP_STATUS.CREATED).json(successResponse(createdMap, `Document ${mapName} was created.`));
+
+    }catch (error){
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error"});
     }
 }
