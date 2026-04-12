@@ -285,6 +285,48 @@ router.get("/shells/:name", getShellByName);
  *         description: Internal server error
  */
 router.get("/weapons/:name", getWeaponByName);
+
+/**
+ * @openapi
+ * /factions/{name}:
+ *   get:
+ *     summary: Retrieve a faction by name
+ *     tags: [Factions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The faction name
+ *     responses:
+ *       '200':
+ *         description: The requested faction
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   $ref: '#/components/schemas/Factions'
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 name: "CYBERACME"
+ *                 lore: "The industry leader in AI."
+ *       '404':
+ *         description: Faction not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Not Found."
+ *       '500':
+ *         description: Internal server error
+ */
+
 router.get("/factions/:name", getFactionByName);
 router.get("/maps/:name", getMap);
 router.post("/shells", createShell);
