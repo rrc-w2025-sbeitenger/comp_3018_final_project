@@ -467,6 +467,49 @@ router.post("/weapons", createWeapon);
  *         description: Internal server error
  */
 router.post("/factions", createFaction);
+
+/**
+ * @openapi
+ * /maps:
+ *   post:
+ *     summary: Upload a map image
+ *     tags: [Maps]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - map_name
+ *               - map_image
+ *             properties:
+ *               map_name:
+ *                 type: string
+ *                 example: "Perimeter"
+ *               map_image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       '201':
+ *         description: Map uploaded successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document Perimeter was created."
+ *               data:
+ *                 map_name: "Perimeter"
+ *                 map_image: "<base64 image data>"
+ *       '404':
+ *         description: No image uploaded
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: No image uploaded."
+ *       '500':
+ *         description: Internal server error
+ */
 router.post("/maps", upload.single('map_image'), createMap);
 router.put("/shells/:name", updateShell);
 router.put("/weapons/:name", updateWeapon);
