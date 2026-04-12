@@ -357,7 +357,7 @@ export const deleteShellDocument = async (shellName:string): Promise<DocumentDat
 };
 
 export const deleteWeaponDocument = async (weaponName:string): Promise<DocumentData | null> => {
-    //Create a reference to a specific document in the 'shells' collection.
+    //Create a reference to a specific document in the 'weapons' collection.
     const weaponDocumentRef: DocumentReference = db.collection("weapons").doc(weaponName);
 
     //get() to retrieve the document.
@@ -375,7 +375,7 @@ export const deleteWeaponDocument = async (weaponName:string): Promise<DocumentD
 };
 
 export const deleteFactionDocument = async (factionName:string): Promise<DocumentData | null> => {
-    //Create a reference to a specific document in the 'shells' collection.
+    //Create a reference to a specific document in the 'factions' collection.
     const factionDocumentRef: DocumentReference = db.collection("factions").doc(factionName);
 
     //get() to retrieve the document.
@@ -391,3 +391,12 @@ export const deleteFactionDocument = async (factionName:string): Promise<Documen
     //return the delete data.
     return factionDocument.data()!;
 };
+
+export const addMapImageDocument = async (mapData:any): Promise<any> => {
+    //Create a reference to a specific document in the 'maps' collection.
+    const mapDocumentRef: DocumentReference = db.collection("maps").doc(mapData.map_name);
+
+    await mapDocumentRef.set(mapData);
+
+    return mapData;
+}
