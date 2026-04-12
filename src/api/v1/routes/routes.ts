@@ -567,6 +567,52 @@ router.post("/maps", upload.single('map_image'), createMap);
  *         description: Internal server error
  */
 router.put("/shells/:name", updateShell);
+
+/**
+ * @openapi
+ * /weapons/{name}:
+ *   put:
+ *     summary: Update a weapon by name
+ *     tags: [Weapons]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The weapon name
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Weapons'
+ *     responses:
+ *       '200':
+ *         description: Weapon updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document Bully SMG was updated"
+ *               data:
+ *                 damage: 45
+ *                 precision_multiplier: 1.5
+ *                 rate_of_fire: "100 RPM"
+ *                 ads_speed: "0.9s"
+ *                 equip_speed: "0.8s"
+ *                 reload_speed: "1.0s"
+ *                 recoil: "Low"
+ *                 aim_assist: 70
+ *       '404':
+ *         description: Weapon not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid weapon name is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.put("/weapons/:name", updateWeapon);
 router.put("/factions/:name", updateFaction);
 router.delete("/shells/:name", deleteShell);
