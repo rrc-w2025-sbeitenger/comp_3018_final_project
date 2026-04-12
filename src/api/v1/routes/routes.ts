@@ -364,6 +364,48 @@ router.get("/factions/:name", getFactionByName);
  *         description: Internal server error
  */
 router.get("/maps/:name", getMap);
+
+/**
+ * @openapi
+ * /shells:
+ *   post:
+ *     summary: Create a new shell
+ *     tags: [Shells]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Shell'
+ *     responses:
+ *       '201':
+ *         description: Shell created successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document Assassin was created."
+ *               data:
+ *                 prime: "Overshield"
+ *                 tactical: "Smoke Grenade"
+ *                 trait_1: "Resilience"
+ *                 trait_2: "Swift"
+ *                 heat_capacity: 100
+ *                 agility: 85
+ *                 loot_speed: 75
+ *                 melee_damage: 50
+ *                 prime_recovery: 30
+ *                 tactical_recovery: 20
+ *                 self_repair_speed: 40
+ *                 finisher_siphon: 15
+ *                 revive_speed: 60
+ *                 hardware: 90
+ *                 firewall: 80
+ *                 fall_resistance: 70
+ *                 ping_duration: 25
+ *       '500':
+ *         description: Internal server error
+ */
 router.post("/shells", createShell);
 router.post("/weapons", createWeapon);
 router.post("/factions", createFaction);
