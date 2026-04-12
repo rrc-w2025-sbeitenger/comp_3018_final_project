@@ -614,6 +614,46 @@ router.put("/shells/:name", updateShell);
  *         description: Internal server error
  */
 router.put("/weapons/:name", updateWeapon);
+
+/**
+ * @openapi
+ * /factions/{name}:
+ *   put:
+ *     summary: Update a faction by name
+ *     tags: [Factions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The faction name
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Factions'
+ *     responses:
+ *       '200':
+ *         description: Faction updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "Document CYBERACME was updated"
+ *               data:
+ *                 name: "CYBERACME"
+ *                 lore: "The industry leader in AI."
+ *       '404':
+ *         description: Faction not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Validation error: Valid faction name is required."
+ *       '500':
+ *         description: Internal server error
+ */
 router.put("/factions/:name", updateFaction);
 router.delete("/shells/:name", deleteShell);
 router.delete("/weapons/:name", deleteWeapon);
