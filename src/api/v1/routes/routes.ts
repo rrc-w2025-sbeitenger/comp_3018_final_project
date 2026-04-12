@@ -440,6 +440,32 @@ router.post("/shells", createShell);
  *         description: Internal server error
  */
 router.post("/weapons", createWeapon);
+
+/**
+ * @openapi
+ * /factions:
+ *   post:
+ *     summary: Create a new faction
+ *     tags: [Factions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Factions'
+ *     responses:
+ *       '201':
+ *         description: Faction created successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 name: "CYBERACME"
+ *                 lore: "The industry leader in AI."
+ *       '500':
+ *         description: Internal server error
+ */
 router.post("/factions", createFaction);
 router.post("/maps", upload.single('map_image'), createMap);
 router.put("/shells/:name", updateShell);
