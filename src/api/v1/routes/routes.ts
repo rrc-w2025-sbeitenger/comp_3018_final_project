@@ -19,6 +19,8 @@ import { getHealthCheck,
                         createMap,
                         getMap
                   } from "../controllers/controllers";
+import { validateRequest } from "../middleware/validate";
+import { marathonSchemas } from "../validation/marathonSchemas";
 
 const router:Router = express.Router();
 
@@ -235,7 +237,7 @@ router.get("/factions", getAllFactions);
  *       '500':
  *         description: Internal server error
  */
-router.get("/shells/:name", getShellByName);
+router.get("/shells/:name", validateRequest(marathonSchemas.getByName), getShellByName);
 
 /**
  * @openapi
@@ -284,7 +286,7 @@ router.get("/shells/:name", getShellByName);
  *       '500':
  *         description: Internal server error
  */
-router.get("/weapons/:name", getWeaponByName);
+router.get("/weapons/:name", validateRequest(marathonSchemas.getByName),  getWeaponByName);
 
 /**
  * @openapi
@@ -327,7 +329,7 @@ router.get("/weapons/:name", getWeaponByName);
  *         description: Internal server error
  */
 
-router.get("/factions/:name", getFactionByName);
+router.get("/factions/:name", validateRequest(marathonSchemas.getByName), getFactionByName);
 
 /**
  * @openapi
@@ -363,7 +365,7 @@ router.get("/factions/:name", getFactionByName);
  *       '500':
  *         description: Internal server error
  */
-router.get("/maps/:name", getMap);
+router.get("/maps/:name", validateRequest(marathonSchemas.getByName), getMap);
 
 /**
  * @openapi
