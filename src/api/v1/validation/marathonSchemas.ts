@@ -83,5 +83,48 @@ export const marathonSchemas = {
                 "number.empty": `"ping_duration" cannot be empty`
             })
         })
+    },
+
+    createWeapon: {
+        body: Joi.object({
+            weapon_name: Joi.string().required().messages({
+                "any.required": `"weapon_name" is required`,
+                "string.empty": `"weapon_name" cannot be empty`
+            }),
+            damage: Joi.number().min(0).required().messages({
+                "any.required": `"damage" is required`,
+                "number.empty": `"damage" cannot be empty`
+            }),
+            precision_multiplier: Joi.number().min(0).required().messages({
+                "any.required": `"precision_multiplier" is required`,
+                "number.empty": `"precision_multiplier" cannot be empty`
+            }),
+            rate_of_fire: Joi.string().pattern(/^\d+(\.\d+)?\s*RPM$/i).required().messages({
+                "any.required": `"rate_of_fire" is required`,
+                "string.empty": `"rate_of_fire" cannot be empty`,
+                "string.pattern.base": `"rate_of_fire" must have a postfix of ' RPM'`
+            }),
+            ads_speed: Joi.string().required().messages({
+                "any.required": `"ads_speed" is required`,
+                "string.empty": `"ads_speed" cannot be empty`
+            }),
+            equip_speed: Joi.string().required().messages({
+                "any.required": `"equip_speed" is required`,
+                "string.empty": `"equip_speed" cannot be empty`
+            }),
+            reload_speed: Joi.string().required().messages({
+                "any.required": `"reload_speed" is required`,
+                "string.empty": `"reload_speed" cannot be empty`
+            }),
+            recoil: Joi.string().required().messages({
+                "any.required": `"recoil" is required`,
+                "string.empty": `"recoil" cannot be empty`
+            }),
+            aim_assist: Joi.number().min(0).required().messages({
+                "any.required": `"aim_assist" is required`,
+                "string.empty": `"aim_assist" cannot be empty`
+            }),
+            
+        })
     }
 }
