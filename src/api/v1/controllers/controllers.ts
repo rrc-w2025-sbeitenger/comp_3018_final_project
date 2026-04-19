@@ -203,18 +203,7 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
 export const updateWeapon = async (req: Request, res:Response): Promise<void> => {
     try{
         const weaponName: string = String(req.params.name);
-        const updateWeaponRequest: Weapons = {
-            ads_speed: req.body.ads_speed,
-            aim_assist: Number(req.body.aim_assist),
-            damage: Number(req.body.damage),
-            equip_speed: req.body.equip_speed,
-            precision_multiplier: Number(req.body.precision_multiplier),
-            rate_of_fire: req.body.rate_of_fire,
-            recoil: req.body.recoil,
-            reload_speed: req.body.reload_speed
-        }
-
-        const updatedWeapon: DocumentData | null = await updateWeaponByNameService(weaponName, updateWeaponRequest);
+        const updatedWeapon: DocumentData | null = await updateWeaponByNameService(weaponName, req.body);
         
         if(!updatedWeapon){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid weapon name is required.`});

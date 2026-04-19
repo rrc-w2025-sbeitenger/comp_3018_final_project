@@ -24,6 +24,7 @@ import { getShellCollection,
                      addMapImageDocument,
                       getMapDocument
                 } from "../repositories/repositories";
+import { Maps } from "../models/mapsModel";
 
 /**
  * returns healthCheck server status.
@@ -86,11 +87,21 @@ export const updateShellByNameService = async (shellName: string, shellObject: S
 }
 
 export const updateWeaponByNameService = async(weaponName: string, weaponObject: Weapons): Promise<DocumentData | null> => {
-    return await updateWeaponDocument(weaponName, weaponObject);
+    try{
+        return await updateWeaponDocument(weaponName, weaponObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${weaponName}: ${errorMessage}`);
+    }
 }
 
 export const updateFactionByNameService = async(factionName: string, factionObject: Factions): Promise<DocumentData | null> => {
-    return await updateFactionDocument(factionName, factionObject);
+    try{
+        return await updateFactionDocument(factionName, factionObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${factionName}: ${errorMessage}`);
+    }
 }
 
 export const deleteShellService = async(shellName: string): Promise<DocumentData | null> => {
@@ -111,7 +122,7 @@ export const createMapService = async(mapImage: Express.Multer.File | undefined,
     //convert binary to text, since we can't store the raw image in firestore.
     const base64MapImage: string = mapImage!.buffer.toString("base64");
     
-    const mapData = {
+    const mapData: Maps = {
         map_name: mapName,
         map_image: base64MapImage
     }

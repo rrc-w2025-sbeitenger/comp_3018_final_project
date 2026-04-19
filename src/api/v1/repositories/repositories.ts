@@ -272,33 +272,27 @@ export const updateShellDocument = async <T>(shellName:string, shellObject: Part
     }
 };
 
-export const updateWeaponDocument = async (weaponName:string, weaponObject: Weapons): Promise<DocumentData | null> => {
-    //doc() gets the shell document reference form firestore.
-    const weaponsDocumentRef: DocumentReference = db.collection("weapons").doc(weaponName);
-    //get() uses that reference to fetch the document, returning DocumentSnapshot.
-    const weaponsDocument: DocumentSnapshot = await weaponsDocumentRef.get();
-    
-    if(!weaponsDocument.exists){
-        return null;
-    }
-    
-    //update() modifies specific fields in the document.
-    //This will only change the specified fields leaving others untouched.
-    await weaponsDocumentRef.update({
-        damage: weaponObject.damage,
-        precision_multiplier: weaponObject.precision_multiplier,
-        rate_of_fire: weaponObject.rate_of_fire,
-        ads_speed: weaponObject.ads_speed,
-        equip_speed: weaponObject.equip_speed,
-        reload_speed: weaponObject.reload_speed,
-        recoil: weaponObject.recoil, 
-        aim_assist: weaponObject.aim_assist,
-    });
+export const updateWeaponDocument = async <T>(weaponName:string, weaponObject: Partial<T>): Promise<DocumentData | null> => {
+    try{
+        //doc() gets the shell document reference form firestore.
+        const weaponsDocumentRef: DocumentReference = db.collection("weapons").doc(weaponName);
+        
+        if(!(await weaponsDocumentRef.get()).exists){
+            return null;
+        }
+        
+        //update() modifies specific fields in the document.
+        //This will only change the specified fields leaving others untouched.
+        await weaponsDocumentRef.update(weaponObject);
 
-    //get updated doc snapshot.
-    const updatedDocument: DocumentSnapshot = await weaponsDocumentRef.get();
-    //data() to view the actual document.
-    return updatedDocument.data()!;
+        //get updated doc snapshot.
+        const updatedDocument: DocumentSnapshot = await weaponsDocumentRef.get();
+        //data() to view the actual document.
+        return updatedDocument.data()!;
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to create document in weapons collection: ${errorMessage}`)
+    }
 };
 
 export const updateFactionDocument = async (factionName:string, factionObject: Factions): Promise<DocumentData | null> => {

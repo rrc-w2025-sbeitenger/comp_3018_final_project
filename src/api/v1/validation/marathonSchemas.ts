@@ -212,5 +212,41 @@ export const marathonSchemas = {
         })
     },
 
-    
+    updateWeapon: {
+        params: Joi.object({
+            name: Joi.string().trim().min(1).required().messages({
+                "any.required": `"name" is required.`,
+                "string.empty": `"name" cannot be empty`,
+                "string.min": `"name" cannot be empty`
+            }),
+        }),
+        body: Joi.object({
+            damage: Joi.number().min(0).optional().messages({
+                "number.empty": `"damage" cannot be empty`
+            }),
+            precision_multiplier: Joi.number().min(0).optional().messages({
+                "number.empty": `"precision_multiplier" cannot be empty`
+            }),
+            rate_of_fire: Joi.string().pattern(/^\d+(\.\d+)?\s*RPM$/i).optional().messages({
+                "any.required": `"rate_of_fire" is required`,
+                "string.empty": `"rate_of_fire" cannot be empty`,
+                "string.pattern.base": `"rate_of_fire" must have a postfix of ' RPM'`
+            }),
+            ads_speed: Joi.string().optional().messages({
+                "number.empty": `"ads_speed" cannot be empty`
+            }),
+            equip_speed: Joi.string().optional().messages({
+                "number.empty": `"equip_speed" cannot be empty`
+            }),
+            reload_speed: Joi.string().optional().messages({
+                "number.empty": `"reload_speed" cannot be empty`
+            }),
+            recoil: Joi.string().optional().messages({
+                "number.empty": `"recoil" cannot be empty`
+            }),
+            aim_assist: Joi.number().optional().messages({
+                "number.empty": `"aim_assist" cannot be empty`
+            }),    
+        })
+    }
 }
