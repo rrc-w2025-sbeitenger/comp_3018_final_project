@@ -217,7 +217,7 @@ router.get("/shells", getAllShells);
  *                   ads_speed: "0.9s"
  *                   equip_speed: "0.8s"
  *                   reload_speed: "1.0s"
- *                   recoil: "Low"
+ *                   recoil: "81%"
  *                   aim_assist: 70
  *       '500':
  *         description: Internal server error
@@ -356,7 +356,7 @@ router.get("/shells/:name", validateRequest(marathonSchemas.getByName), getShell
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -537,7 +537,7 @@ router.post("/shells", authenticate, isAuthorized({ hasRole: ["admin"]}), valida
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '400':
  *         $ref: '#/components/responses/ValidationError'
@@ -739,7 +739,7 @@ router.put("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), v
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -898,7 +898,7 @@ router.delete("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]})
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -932,7 +932,7 @@ router.delete("/weapons/:name", authenticate, isAuthorized({ hasRole: ["admin"]}
  *         schema:
  *           type: string
  *         description: The faction name
- *          example: cyberacme
+ *         example: cyberacme
  *     responses:
  *       '200':
  *         description: Faction deleted successfully
