@@ -2,7 +2,7 @@
  * @openapi
  * components:
  *   schemas:
- *     Shell:
+ *     ShellRequest:
  *       type: object
  *       required:
  *         - shell_name

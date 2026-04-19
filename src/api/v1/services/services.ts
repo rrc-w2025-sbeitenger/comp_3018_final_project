@@ -24,6 +24,7 @@ import { getShellCollection,
                      addMapImageDocument,
                       getMapDocument
                 } from "../repositories/repositories";
+import { Maps } from "../models/mapsModel";
 
 /**
  * returns healthCheck server status.
@@ -76,16 +77,31 @@ export const createFactionService = async (factionCreateRequest: Factions): Prom
     return await addFactionDocument(factionCreateRequest);
 }
 
-export const updateShellByNameService = async(shellName: string, shellObject: Shell): Promise<DocumentData | null> => {
-    return await updateShellDocument(shellName, shellObject);
+export const updateShellByNameService = async (shellName: string, shellObject: Shell): Promise<DocumentData | null> => {
+    try{
+        return await updateShellDocument(shellName, shellObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${shellName}: ${errorMessage}`);
+    }
 }
 
 export const updateWeaponByNameService = async(weaponName: string, weaponObject: Weapons): Promise<DocumentData | null> => {
-    return await updateWeaponDocument(weaponName, weaponObject);
+    try{
+        return await updateWeaponDocument(weaponName, weaponObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${weaponName}: ${errorMessage}`);
+    }
 }
 
 export const updateFactionByNameService = async(factionName: string, factionObject: Factions): Promise<DocumentData | null> => {
-    return await updateFactionDocument(factionName, factionObject);
+    try{
+        return await updateFactionDocument(factionName, factionObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${factionName}: ${errorMessage}`);
+    }
 }
 
 export const deleteShellService = async(shellName: string): Promise<DocumentData | null> => {
@@ -101,12 +117,10 @@ export const deleteFactionService = async(factionName: string): Promise<Document
 }
 
 export const createMapService = async(mapImage: Express.Multer.File | undefined, mapName: string): Promise<any> => {
-    //! currently storing in Firestore as base64 since I am unable to create a Firestore Storage because of region.
-    //! this will be fixed once the issue has been resolved.
     //convert binary to text, since we can't store the raw image in firestore.
     const base64MapImage: string = mapImage!.buffer.toString("base64");
     
-    const mapData = {
+    const mapData: Maps = {
         map_name: mapName,
         map_image: base64MapImage
     }

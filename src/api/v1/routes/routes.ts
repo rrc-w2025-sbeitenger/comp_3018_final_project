@@ -19,8 +19,81 @@ import { getHealthCheck,
                         createMap,
                         getMap
                   } from "../controllers/controllers";
+import { validateRequest } from "../middleware/validate";
+import { marathonSchemas } from "../validation/marathonSchemas";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router:Router = express.Router();
+
+/**
+ * @openapi
+ * components:
+ *   responses:
+ *     ValidationError:
+ *       description: Request validation failed
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *           example:
+ *             error: "Validation error: Params: \"name\" cannot be empty"
+ *     UnauthorizedError:
+ *       description: Missing or invalid Firebase bearer token
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               success:
+ *                 type: boolean
+ *                 example: false
+ *               error:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                   code:
+ *                     type: string
+ *               timestamp:
+ *                 type: string
+ *                 format: date-time
+ *           example:
+ *             success: false
+ *             error:
+ *               message: "Unauthorized: No token provided"
+ *               code: "TOKEN_NOT_FOUND"
+ *             timestamp: "2026-04-11T17:30:00.000Z"
+ *     ForbiddenError:
+ *       description: Authenticated user does not have the required role
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               success:
+ *                 type: boolean
+ *                 example: false
+ *               error:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                   code:
+ *                     type: string
+ *               timestamp:
+ *                 type: string
+ *                 format: date-time
+ *           example:
+ *             success: false
+ *             error:
+ *               message: "Forbidden: Insufficient role"
+ *               code: "INSUFFICIENT_ROLE"
+ *             timestamp: "2026-04-11T17:30:00.000Z"
+ */
 
 /**
  * @openapi
@@ -28,6 +101,7 @@ const router:Router = express.Router();
  *   get:
  *     summary: Returns the health status of the server
  *     tags: [Health]
+ *     security: []
  *     responses:
  *       '200':
  *         description: Server is running
@@ -69,6 +143,7 @@ router.get("/health", getHealthCheck);
  *   get:
  *     summary: Retrieve all shells
  *     tags: [Shells]
+ *     security: []
  *     responses:
  *       '200':
  *         description: A list of shells
@@ -87,7 +162,7 @@ router.get("/health", getHealthCheck);
  *             example:
  *               status: "success"
  *               data:
- *                 - shell_name: "Assassin"
+ *                 - shell_name: "assassin"
  *                   prime: "Overshield"
  *                   tactical: "Smoke Grenade"
  *                   trait_1: "Resilience"
@@ -116,6 +191,7 @@ router.get("/shells", getAllShells);
  *   get:
  *     summary: Retrieve all weapons
  *     tags: [Weapons]
+ *     security: []
  *     responses:
  *       '200':
  *         description: A list of weapons
@@ -134,15 +210,15 @@ router.get("/shells", getAllShells);
  *             example:
  *               status: "success"
  *               data:
- *                 weapon_name: "Bully SMG"
- *                 damage: 45
- *                 precision_multiplier: 1.5
- *                 rate_of_fire: "100 RPM"
- *                 ads_speed: "0.9s"
- *                 equip_speed: "0.8s"
- *                 reload_speed: "1.0s"
- *                 recoil: "Low"
- *                 aim_assist: 70
+ *                 - weapon_name: "bully_smg"
+ *                   damage: 45
+ *                   precision_multiplier: 1.5
+ *                   rate_of_fire: "100 RPM"
+ *                   ads_speed: "0.9s"
+ *                   equip_speed: "0.8s"
+ *                   reload_speed: "1.0s"
+ *                   recoil: "81%"
+ *                   aim_assist: 70
  *       '500':
  *         description: Internal server error
  */
@@ -154,6 +230,7 @@ router.get("/weapons", getAllWeapons);
  *   get:
  *     summary: Retrieve all factions
  *     tags: [Factions]
+ *     security: []
  *     responses:
  *       '200':
  *         description: A list of factions
@@ -172,8 +249,8 @@ router.get("/weapons", getAllWeapons);
  *             example:
  *               status: "success"
  *               data:
- *                 name: "CYBERACME"
- *                 lore: "The industry leader in AI."
+ *                 - name: "cyberacme"
+ *                   lore: "The industry leader in AI."
  *       '500':
  *         description: Internal server error
  */
@@ -185,6 +262,7 @@ router.get("/factions", getAllFactions);
  *   get:
  *     summary: Retrieve a shell by name
  *     tags: [Shells]
+ *     security: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -192,6 +270,7 @@ router.get("/factions", getAllFactions);
  *         schema:
  *           type: string
  *         description: The shell name
+ *         example: assassin
  *     responses:
  *       '200':
  *         description: The requested shell
@@ -208,7 +287,7 @@ router.get("/factions", getAllFactions);
  *             example:
  *               status: "success"
  *               data:
- *                 shell_name: "Assassin"
+ *                 shell_name: "assassin"
  *                 prime: "Overshield"
  *                 tactical: "Smoke Grenade"
  *                 trait_1: "Resilience"
@@ -232,10 +311,12 @@ router.get("/factions", getAllFactions);
  *           application/json:
  *             example:
  *               message: "Not Found."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
  *       '500':
  *         description: Internal server error
  */
-router.get("/shells/:name", getShellByName);
+router.get("/shells/:name", validateRequest(marathonSchemas.getByName), getShellByName);
 
 /**
  * @openapi
@@ -243,6 +324,7 @@ router.get("/shells/:name", getShellByName);
  *   get:
  *     summary: Retrieve a weapon by name
  *     tags: [Weapons]
+ *     security: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -250,6 +332,7 @@ router.get("/shells/:name", getShellByName);
  *         schema:
  *           type: string
  *         description: The weapon name
+ *         example: impact_hr
  *     responses:
  *       '200':
  *         description: The requested weapon
@@ -266,14 +349,14 @@ router.get("/shells/:name", getShellByName);
  *             example:
  *               status: "success"
  *               data:
- *                 weapon_name: "Bully SMG"
+ *                 weapon_name: "bully_smg"
  *                 damage: 45
  *                 precision_multiplier: 1.5
  *                 rate_of_fire: "100 RPM"
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -281,10 +364,12 @@ router.get("/shells/:name", getShellByName);
  *           application/json:
  *             example:
  *               message: "Not Found."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
  *       '500':
  *         description: Internal server error
  */
-router.get("/weapons/:name", getWeaponByName);
+router.get("/weapons/:name", validateRequest(marathonSchemas.getByName),  getWeaponByName);
 
 /**
  * @openapi
@@ -292,6 +377,7 @@ router.get("/weapons/:name", getWeaponByName);
  *   get:
  *     summary: Retrieve a faction by name
  *     tags: [Factions]
+ *     security: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -299,6 +385,7 @@ router.get("/weapons/:name", getWeaponByName);
  *         schema:
  *           type: string
  *         description: The faction name
+ *         example: cyberacme
  *     responses:
  *       '200':
  *         description: The requested faction
@@ -315,7 +402,7 @@ router.get("/weapons/:name", getWeaponByName);
  *             example:
  *               status: "success"
  *               data:
- *                 name: "CYBERACME"
+ *                 name: "cyberacme"
  *                 lore: "The industry leader in AI."
  *       '404':
  *         description: Faction not found
@@ -323,11 +410,13 @@ router.get("/weapons/:name", getWeaponByName);
  *           application/json:
  *             example:
  *               message: "Not Found."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
  *       '500':
  *         description: Internal server error
  */
 
-router.get("/factions/:name", getFactionByName);
+router.get("/factions/:name", validateRequest(marathonSchemas.getByName), getFactionByName);
 
 /**
  * @openapi
@@ -335,6 +424,8 @@ router.get("/factions/:name", getFactionByName);
  *   get:
  *     summary: Retrieve a map image by name
  *     tags: [Maps]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -342,15 +433,12 @@ router.get("/factions/:name", getFactionByName);
  *         schema:
  *           type: string
  *         description: The map name
+ *         example: perimeter
  *     responses:
  *       '200':
  *         description: The map image file
  *         content:
  *           image/png:
- *             schema:
- *               type: string
- *               format: binary
- *           image/jpeg:
  *             schema:
  *               type: string
  *               format: binary
@@ -360,10 +448,16 @@ router.get("/factions/:name", getFactionByName);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid map is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.get("/maps/:name", getMap);
+router.get("/maps/:name", authenticate, isAuthorized({ hasRole: ["admin", "user"]}), validateRequest(marathonSchemas.getByName), getMap);
 
 /**
  * @openapi
@@ -371,6 +465,8 @@ router.get("/maps/:name", getMap);
  *   post:
  *     summary: Create a new shell
  *     tags: [Shells]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -384,7 +480,6 @@ router.get("/maps/:name", getMap);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document Assassin was created."
  *               data:
  *                 prime: "Overshield"
  *                 tactical: "Smoke Grenade"
@@ -403,10 +498,16 @@ router.get("/maps/:name", getMap);
  *                 firewall: 80
  *                 fall_resistance: 70
  *                 ping_duration: 25
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.post("/shells", createShell);
+router.post("/shells", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createShell), createShell);
 
 /**
  * @openapi
@@ -414,6 +515,8 @@ router.post("/shells", createShell);
  *   post:
  *     summary: Create a new weapon
  *     tags: [Weapons]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -434,12 +537,18 @@ router.post("/shells", createShell);
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.post("/weapons", createWeapon);
+router.post("/weapons", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createWeapon), createWeapon);
 
 /**
  * @openapi
@@ -447,6 +556,8 @@ router.post("/weapons", createWeapon);
  *   post:
  *     summary: Create a new faction
  *     tags: [Factions]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -461,12 +572,18 @@ router.post("/weapons", createWeapon);
  *             example:
  *               status: "success"
  *               data:
- *                 name: "CYBERACME"
+ *                 name: "cyberacme"
  *                 lore: "The industry leader in AI."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.post("/factions", createFaction);
+router.post("/factions", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createFaction), createFaction);
 
 /**
  * @openapi
@@ -474,6 +591,8 @@ router.post("/factions", createFaction);
  *   post:
  *     summary: Upload a map image
  *     tags: [Maps]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -507,10 +626,16 @@ router.post("/factions", createFaction);
  *           application/json:
  *             example:
  *               message: "Validation error: No image uploaded."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.post("/maps", upload.single('map_image'), createMap);
+router.post("/maps", authenticate, isAuthorized({ hasRole: ["admin"]}), upload.single('map_image'), validateRequest(marathonSchemas.createMaps), createMap);
 
 /**
  * @openapi
@@ -518,6 +643,8 @@ router.post("/maps", upload.single('map_image'), createMap);
  *   put:
  *     summary: Update a shell by name
  *     tags: [Shells]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -525,6 +652,7 @@ router.post("/maps", upload.single('map_image'), createMap);
  *         schema:
  *           type: string
  *         description: The shell name
+ *         example: assassin
  *     requestBody:
  *       required: true
  *       content:
@@ -538,7 +666,7 @@ router.post("/maps", upload.single('map_image'), createMap);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document Assassin was updated."
+ *               message: "Document assassin was updated."
  *               data:
  *                 prime: "Overshield"
  *                 tactical: "Smoke Grenade"
@@ -563,10 +691,16 @@ router.post("/maps", upload.single('map_image'), createMap);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid shell name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.put("/shells/:name", updateShell);
+router.put("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateShell), updateShell);
 
 /**
  * @openapi
@@ -574,6 +708,8 @@ router.put("/shells/:name", updateShell);
  *   put:
  *     summary: Update a weapon by name
  *     tags: [Weapons]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -581,6 +717,7 @@ router.put("/shells/:name", updateShell);
  *         schema:
  *           type: string
  *         description: The weapon name
+ *         example: impact_hr
  *     requestBody:
  *       required: true
  *       content:
@@ -594,7 +731,7 @@ router.put("/shells/:name", updateShell);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document Bully SMG was updated"
+ *               message: "Document bully_smg was updated"
  *               data:
  *                 damage: 45
  *                 precision_multiplier: 1.5
@@ -602,7 +739,7 @@ router.put("/shells/:name", updateShell);
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -610,10 +747,16 @@ router.put("/shells/:name", updateShell);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid weapon name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.put("/weapons/:name", updateWeapon);
+router.put("/weapons/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateWeapon), updateWeapon);
 
 /**
  * @openapi
@@ -621,6 +764,8 @@ router.put("/weapons/:name", updateWeapon);
  *   put:
  *     summary: Update a faction by name
  *     tags: [Factions]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -628,6 +773,7 @@ router.put("/weapons/:name", updateWeapon);
  *         schema:
  *           type: string
  *         description: The faction name
+ *         example: cyberacme
  *     requestBody:
  *       required: true
  *       content:
@@ -641,9 +787,9 @@ router.put("/weapons/:name", updateWeapon);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document CYBERACME was updated"
+ *               message: "Document cyberacme was updated"
  *               data:
- *                 name: "CYBERACME"
+ *                 name: "cyberacme"
  *                 lore: "The industry leader in AI."
  *       '404':
  *         description: Faction not found
@@ -651,10 +797,16 @@ router.put("/weapons/:name", updateWeapon);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid faction name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.put("/factions/:name", updateFaction);
+router.put("/factions/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateFaction), updateFaction);
 
 /**
  * @openapi
@@ -662,6 +814,8 @@ router.put("/factions/:name", updateFaction);
  *   delete:
  *     summary: Delete a shell by name
  *     tags: [Shells]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -669,6 +823,7 @@ router.put("/factions/:name", updateFaction);
  *         schema:
  *           type: string
  *         description: The shell name
+ *         example: assassin
  *     responses:
  *       '200':
  *         description: Shell deleted successfully
@@ -676,7 +831,7 @@ router.put("/factions/:name", updateFaction);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document Assassin was deleted"
+ *               message: "Document assassin was deleted"
  *               data:
  *                 prime: "Overshield"
  *                 tactical: "Smoke Grenade"
@@ -701,10 +856,16 @@ router.put("/factions/:name", updateFaction);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid shell name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.delete("/shells/:name", deleteShell);
+router.delete("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteShell);
 
 /**
  * @openapi
@@ -712,6 +873,8 @@ router.delete("/shells/:name", deleteShell);
  *   delete:
  *     summary: Delete a weapon by name
  *     tags: [Weapons]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -719,6 +882,7 @@ router.delete("/shells/:name", deleteShell);
  *         schema:
  *           type: string
  *         description: The weapon name
+ *         example: impact_hr
  *     responses:
  *       '200':
  *         description: Weapon deleted successfully
@@ -726,7 +890,7 @@ router.delete("/shells/:name", deleteShell);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document Bully SMG was deleted"
+ *               message: "Document bully_smg was deleted"
  *               data:
  *                 damage: 45
  *                 precision_multiplier: 1.5
@@ -734,7 +898,7 @@ router.delete("/shells/:name", deleteShell);
  *                 ads_speed: "0.9s"
  *                 equip_speed: "0.8s"
  *                 reload_speed: "1.0s"
- *                 recoil: "Low"
+ *                 recoil: "81%"
  *                 aim_assist: 70
  *       '404':
  *         description: Weapon not found
@@ -742,10 +906,16 @@ router.delete("/shells/:name", deleteShell);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid weapon name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.delete("/weapons/:name", deleteWeapon);
+router.delete("/weapons/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteWeapon);
 
 /**
  * @openapi
@@ -753,6 +923,8 @@ router.delete("/weapons/:name", deleteWeapon);
  *   delete:
  *     summary: Delete a faction by name
  *     tags: [Factions]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: name
@@ -760,6 +932,7 @@ router.delete("/weapons/:name", deleteWeapon);
  *         schema:
  *           type: string
  *         description: The faction name
+ *         example: cyberacme
  *     responses:
  *       '200':
  *         description: Faction deleted successfully
@@ -767,9 +940,9 @@ router.delete("/weapons/:name", deleteWeapon);
  *           application/json:
  *             example:
  *               status: "success"
- *               message: "Document CYBERACME was deleted"
+ *               message: "Document cyberacme was deleted"
  *               data:
- *                 name: "CYBERACME"
+ *                 name: "cyberacme"
  *                 lore: "The industry leader in AI."
  *       '404':
  *         description: Faction not found
@@ -777,10 +950,15 @@ router.delete("/weapons/:name", deleteWeapon);
  *           application/json:
  *             example:
  *               message: "Validation error: Valid faction name is required."
+ *       '400':
+ *         $ref: '#/components/responses/ValidationError'
+ *       '401':
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       '403':
+ *         $ref: '#/components/responses/ForbiddenError'
  *       '500':
  *         description: Internal server error
  */
-router.delete("/factions/:name", deleteFaction);
-//!add put routes later and admin routes
+router.delete("/factions/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteFaction);
 
 export default router;

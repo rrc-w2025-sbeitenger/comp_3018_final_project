@@ -11,7 +11,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: "http://localhost:3000/api/v1",
+                url: process.env.SWAGGER_SERVER_URL,
                 description: "Local server",
             },
         ],
@@ -30,7 +30,11 @@ const swaggerOptions: swaggerJsdoc.Options = {
             },
         ],
     },
-    apis: ["./src/api/v1/routes/*.ts", "./src/api/v1/validations/*.ts"], // Path to the API docs and schemas
+    apis: [
+        "./src/api/v1/routes/*.ts",
+        "./src/api/v1/models/*.ts",
+        "./src/api/v1/validation/*.ts",
+    ], // Path to the API docs and schemas
 };
 
 // Generate the Swagger spec
