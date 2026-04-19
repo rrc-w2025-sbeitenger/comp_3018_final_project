@@ -4,9 +4,10 @@ import dotenv from "dotenv";
 // Load environment variables BEFORE your internal imports!
 dotenv.config();
 
+import routes from "./api/v1/routes/routes";
+import adminRoutes from "./api/v1/routes/adminRoutes";
 import morgan from "morgan";
 import setupSwagger from "./config/swagger";
-import routes from "./api/v1/routes/routes";
 import {
     accessLogger,
     errorLogger,
@@ -88,6 +89,7 @@ app.use((morgan("combined")));
 
 //router handler for marathon API.
 app.use("/api/v1", routes);
+app.use("/api/v1", adminRoutes);
 
 //setup swagger
 setupSwagger(app);

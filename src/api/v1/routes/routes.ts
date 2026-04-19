@@ -21,6 +21,8 @@ import { getHealthCheck,
                   } from "../controllers/controllers";
 import { validateRequest } from "../middleware/validate";
 import { marathonSchemas } from "../validation/marathonSchemas";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router:Router = express.Router();
 
@@ -365,7 +367,7 @@ router.get("/factions/:name", validateRequest(marathonSchemas.getByName), getFac
  *       '500':
  *         description: Internal server error
  */
-router.get("/maps/:name", validateRequest(marathonSchemas.getByName), getMap);
+router.get("/maps/:name", authenticate, isAuthorized({ hasRole: ["admin", "user"]}), validateRequest(marathonSchemas.getByName), getMap);
 
 /**
  * @openapi
@@ -408,7 +410,7 @@ router.get("/maps/:name", validateRequest(marathonSchemas.getByName), getMap);
  *       '500':
  *         description: Internal server error
  */
-router.post("/shells", validateRequest(marathonSchemas.createShell), createShell);
+router.post("/shells", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createShell), createShell);
 
 /**
  * @openapi
@@ -441,7 +443,7 @@ router.post("/shells", validateRequest(marathonSchemas.createShell), createShell
  *       '500':
  *         description: Internal server error
  */
-router.post("/weapons", validateRequest(marathonSchemas.createWeapon), createWeapon);
+router.post("/weapons", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createWeapon), createWeapon);
 
 /**
  * @openapi
@@ -468,7 +470,7 @@ router.post("/weapons", validateRequest(marathonSchemas.createWeapon), createWea
  *       '500':
  *         description: Internal server error
  */
-router.post("/factions", validateRequest(marathonSchemas.createFaction), createFaction);
+router.post("/factions", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.createFaction), createFaction);
 
 /**
  * @openapi
@@ -512,7 +514,7 @@ router.post("/factions", validateRequest(marathonSchemas.createFaction), createF
  *       '500':
  *         description: Internal server error
  */
-router.post("/maps", upload.single('map_image'), validateRequest(marathonSchemas.createMaps), createMap);
+router.post("/maps", authenticate, isAuthorized({ hasRole: ["admin"]}), upload.single('map_image'), validateRequest(marathonSchemas.createMaps), createMap);
 
 /**
  * @openapi
@@ -568,7 +570,7 @@ router.post("/maps", upload.single('map_image'), validateRequest(marathonSchemas
  *       '500':
  *         description: Internal server error
  */
-router.put("/shells/:name", validateRequest(marathonSchemas.updateShell), updateShell);
+router.put("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateShell), updateShell);
 
 /**
  * @openapi
@@ -615,7 +617,7 @@ router.put("/shells/:name", validateRequest(marathonSchemas.updateShell), update
  *       '500':
  *         description: Internal server error
  */
-router.put("/weapons/:name", validateRequest(marathonSchemas.updateWeapon), updateWeapon);
+router.put("/weapons/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateWeapon), updateWeapon);
 
 /**
  * @openapi
@@ -656,7 +658,7 @@ router.put("/weapons/:name", validateRequest(marathonSchemas.updateWeapon), upda
  *       '500':
  *         description: Internal server error
  */
-router.put("/factions/:name", validateRequest(marathonSchemas.updateFaction), updateFaction);
+router.put("/factions/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.updateFaction), updateFaction);
 
 /**
  * @openapi
@@ -706,7 +708,7 @@ router.put("/factions/:name", validateRequest(marathonSchemas.updateFaction), up
  *       '500':
  *         description: Internal server error
  */
-router.delete("/shells/:name", validateRequest(marathonSchemas.getByName), deleteShell);
+router.delete("/shells/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteShell);
 
 /**
  * @openapi
@@ -747,7 +749,7 @@ router.delete("/shells/:name", validateRequest(marathonSchemas.getByName), delet
  *       '500':
  *         description: Internal server error
  */
-router.delete("/weapons/:name", validateRequest(marathonSchemas.getByName), deleteWeapon);
+router.delete("/weapons/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteWeapon);
 
 /**
  * @openapi
@@ -782,7 +784,6 @@ router.delete("/weapons/:name", validateRequest(marathonSchemas.getByName), dele
  *       '500':
  *         description: Internal server error
  */
-router.delete("/factions/:name", validateRequest(marathonSchemas.getByName), deleteFaction);
-//!add put routes later and admin routes
+router.delete("/factions/:name", authenticate, isAuthorized({ hasRole: ["admin"]}), validateRequest(marathonSchemas.getByName), deleteFaction);
 
 export default router;
