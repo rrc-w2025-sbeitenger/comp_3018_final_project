@@ -4,3 +4,4 @@ marathonApiServiceKey.json
 # Logs
 logs/
 *.log
+.env
