@@ -148,4 +148,69 @@ export const marathonSchemas = {
             }),
         })
     },
+
+    updateShell: {
+        params: Joi.object({
+            name: Joi.string().trim().min(1).required().messages({
+                "any.required": `"name" is required.`,
+                "string.empty": `"name" cannot be empty`,
+                "string.min": `"name" cannot be empty`
+            }),
+        }),
+        body: Joi.object({
+            prime: Joi.string().optional().messages({
+                "string.empty": `"prime" cannot be empty`
+            }),
+            tactical: Joi.string().optional().messages({
+                "string.empty": `"tactical" cannot be empty`
+            }),
+            trait_1: Joi.string().optional().messages({
+                "string.empty": `"trait_1" cannot be empty`
+            }),
+            trait_2: Joi.string().optional().messages({
+                "string.empty": `"trait_2" cannot be empty`
+            }),
+            heat_capacity: Joi.number().min(0).optional().messages({
+                "number.empty": `"heat_capacity" cannot be empty`
+            }),
+            agility: Joi.number().min(0).optional().messages({
+                "number.empty": `"agility" cannot be empty`
+            }),
+            loot_speed: Joi.number().min(0).optional().messages({
+                "number.empty": `"agility" cannot be empty`
+            }),
+            melee_damage: Joi.number().min(0).optional().messages({
+                "number.empty": `"melee_damage" cannot be empty`
+            }),
+            prime_recovery: Joi.number().min(0).optional().messages({
+                "number.empty": `"prime_recovery" cannot be empty`
+            }),
+            tactical_recovery: Joi.number().min(0).optional().messages({
+                "number.empty": `"tactical_recovery" cannot be empty`
+            }),
+            self_repair_speed: Joi.number().min(0).optional().messages({
+                "number.empty": `"self_repair_speed" cannot be empty`
+            }),
+            finisher_siphon: Joi.number().min(0).optional().messages({
+                "number.empty": `"finisher_siphon" cannot be empty`
+            }),
+            revive_speed: Joi.number().min(0).optional().messages({
+                "number.empty": `"revive_speed" cannot be empty`
+            }),
+            hardware: Joi.number().min(0).optional().messages({
+                "number.empty": `"hardware" cannot be empty`    
+            }),
+            firewall: Joi.number().min(0).optional().messages({
+                "number.empty": `"firewall" cannot be empty`    
+            }),
+            fall_resistance: Joi.number().min(0).optional().messages({
+                "number.empty": `"fall_resistance" cannot be empty`
+            }),
+            ping_duration: Joi.number().min(0).optional().messages({
+                "number.empty": `"ping_duration" cannot be empty`
+            })
+        })
+    },
+
+    
 }

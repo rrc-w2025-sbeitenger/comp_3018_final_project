@@ -248,42 +248,28 @@ export const addFactionDocument = async (createNewFaction: Factions): Promise<Fa
 };
 
 
-export const updateShellDocument = async (shellName:string, shellObject: Shell): Promise<DocumentData | null> => {
-    //doc() gets the shell document reference form firestore.
-    const shellDocumentRef: DocumentReference = db.collection("shells").doc(shellName);
-    //get() uses that reference to fetch the document, returning DocumentSnapshot.
-    const shellDocument: DocumentSnapshot = await shellDocumentRef.get();
-    
-    if(!shellDocument.exists){
-        return null;
-    }
-    
-    //update() modifies specific fields in the document.
-    //This will only change the specified fields leaving others untouched.
-    await shellDocumentRef.update({
-        prime: shellObject.prime,
-        tactical: shellObject.tactical,
-        trait_1: shellObject.trait_1,
-        trait_2: shellObject.trait_2, 
-        heat_capacity: shellObject.heat_capacity,
-        agility: shellObject.agility,
-        loot_speed: shellObject.loot_speed,
-        melee_damage: shellObject.melee_damage,
-        prime_recovery: shellObject.prime_recovery,
-        tactical_recovery: shellObject.tactical_recovery,
-        self_repair_speed: shellObject.self_repair_speed,
-        finisher_siphon: shellObject.finisher_siphon,
-        revive_speed: shellObject.revive_speed,
-        hardware: shellObject.hardware,
-        firewall: shellObject.firewall,
-        fall_resistance: shellObject.fall_resistance,
-        ping_duration: shellObject.ping_duration
-    });
+export const updateShellDocument = async <T>(shellName:string, shellObject: Partial<T>): Promise<DocumentData | null> => {
+    try{
+        //doc() gets the shell document reference form firestore.
+        const shellDocumentRef: DocumentReference = db.collection("shells").doc(shellName);
 
-    //get updated doc snapshot.
-    const updatedDocument: DocumentSnapshot = await shellDocumentRef.get();
-    //data() to view the actual document.
-    return updatedDocument.data()!;
+        //get() uses that reference to fetch the document, returning DocumentSnapshot.
+        if(!(await shellDocumentRef.get()).exists){
+            return null;
+        }
+        
+        //update() modifies specific fields in the document.
+        //This will only change the specified fields leaving others untouched.
+        await shellDocumentRef.update(shellObject);
+
+        //get updated doc snapshot.
+        const updatedDocument: DocumentSnapshot = await shellDocumentRef.get();
+        //return the updated data.
+        return updatedDocument.data()!;
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to create document in shells collection: ${errorMessage}`)
+    }
 };
 
 export const updateWeaponDocument = async (weaponName:string, weaponObject: Weapons): Promise<DocumentData | null> => {

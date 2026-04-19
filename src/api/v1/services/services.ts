@@ -76,8 +76,13 @@ export const createFactionService = async (factionCreateRequest: Factions): Prom
     return await addFactionDocument(factionCreateRequest);
 }
 
-export const updateShellByNameService = async(shellName: string, shellObject: Shell): Promise<DocumentData | null> => {
-    return await updateShellDocument(shellName, shellObject);
+export const updateShellByNameService = async (shellName: string, shellObject: Shell): Promise<DocumentData | null> => {
+    try{
+        return await updateShellDocument(shellName, shellObject);
+    } catch (error: unknown){
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update post ${shellName}: ${errorMessage}`);
+    }
 }
 
 export const updateWeaponByNameService = async(weaponName: string, weaponObject: Weapons): Promise<DocumentData | null> => {
