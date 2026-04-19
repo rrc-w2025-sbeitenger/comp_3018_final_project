@@ -6,6 +6,12 @@ import { Factions } from "../models/factionsModel";
 import { Shell } from "../models/shellModel";
 import { Weapons } from "../models/weaponsModel";
 
+/**
+ * Retrieves all documents from the 'shells' Firestore collection.
+ *
+ * @returns {Promise<ShellRequest[]>} An array of all shell documents.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getShellCollection = async (): Promise<ShellRequest[]> => {
     try {
         //Retrieve all documents from the 'shells' collection.
@@ -48,6 +54,12 @@ export const getShellCollection = async (): Promise<ShellRequest[]> => {
     }
 }
 
+/**
+ * Retrieves all documents from the 'weapons' Firestore collection.
+ *
+ * @returns {Promise<WeaponsRequest[]>} An array of all weapon documents.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getWeaponCollection = async (): Promise<WeaponsRequest[]> => {
     try{
         //Retrieve all documents from the 'weapons' collection.
@@ -81,6 +93,12 @@ export const getWeaponCollection = async (): Promise<WeaponsRequest[]> => {
     }
 }
 
+/**
+ * Retrieves all documents from the 'factions' Firestore collection.
+ *
+ * @returns {Promise<Factions[]>} An array of all faction documents.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getFactionsCollection = async (): Promise<Factions[]> => {
     try{
         //Retrieve all documents from the 'factions' collection.
@@ -107,6 +125,13 @@ export const getFactionsCollection = async (): Promise<Factions[]> => {
     }
 }
 
+/**
+ * Retrieves a single shell document by name from the 'shells' Firestore collection.
+ *
+ * @param {string} shellName - The document ID (shell name) to look up.
+ * @returns {Promise<Shell | null>} The shell document, or null if not found.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getShellDocument = async (shellName: string): Promise<Shell | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -151,6 +176,13 @@ export const getShellDocument = async (shellName: string): Promise<Shell | null>
     }   
 };
 
+/**
+ * Retrieves a single weapon document by name from the 'weapons' Firestore collection.
+ *
+ * @param {string} weaponName - The document ID (weapon name) to look up.
+ * @returns {Promise<Weapons | null>} The weapon document, or null if not found.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getWeaponDocument = async (weaponName: string): Promise<Weapons | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -186,6 +218,13 @@ export const getWeaponDocument = async (weaponName: string): Promise<Weapons | n
     }        
 };
 
+/**
+ * Retrieves a single faction document by name from the 'factions' Firestore collection.
+ *
+ * @param {string} factionName - The document ID (faction name) to look up.
+ * @returns {Promise<Factions | null>} The faction document, or null if not found.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getFactionDocument = async (factionName: string): Promise<Factions | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -216,6 +255,14 @@ export const getFactionDocument = async (factionName: string): Promise<Factions 
     }    
 };
 
+/**
+ * Creates a new shell document in the 'shells' Firestore collection.
+ * Uses the shell_name field as the document ID.
+ *
+ * @param {ShellRequest} createNewShell - The shell data to store.
+ * @returns {Promise<Shell>} The newly created shell document.
+ * @throws {Error} If the Firestore write fails.
+ */
 export const addShellDocument = async (createNewShell: ShellRequest): Promise<Shell> => {
     try{
         //create a reference to a document in the 'shells' collection.
@@ -253,6 +300,14 @@ export const addShellDocument = async (createNewShell: ShellRequest): Promise<Sh
     }   
 };
 
+/**
+ * Creates a new weapon document in the 'weapons' Firestore collection.
+ * Uses the weapon_name field as the document ID.
+ *
+ * @param {WeaponsRequest} createNewWeapon - The weapon data to store.
+ * @returns {Promise<Weapons>} The newly created weapon document.
+ * @throws {Error} If the Firestore write fails.
+ */
 export const addWeaponDocument = async (createNewWeapon: WeaponsRequest): Promise<Weapons> => {
     try{
         //create a reference to a document in the 'weapons' collection.
@@ -281,6 +336,14 @@ export const addWeaponDocument = async (createNewWeapon: WeaponsRequest): Promis
     }  
 };
 
+/**
+ * Creates a new faction document in the 'factions' Firestore collection.
+ * Uses the name field as the document ID.
+ *
+ * @param {Factions} createNewFaction - The faction data to store.
+ * @returns {Promise<Factions>} The newly created faction document.
+ * @throws {Error} If the Firestore write fails.
+ */
 export const addFactionDocument = async (createNewFaction: Factions): Promise<Factions> => {
     try{
         //create a reference to a document in the 'weapons' collection.
@@ -296,7 +359,15 @@ export const addFactionDocument = async (createNewFaction: Factions): Promise<Fa
     }  
 };
 
-
+/**
+ * Updates specific fields of a shell document in the 'shells' Firestore collection.
+ * Only the provided fields are modified, others are untouched.
+ *
+ * @param {string} shellName - The document ID (shell name) to update.
+ * @param {Partial<T>} shellObject - An object containing the fields to update.
+ * @returns {Promise<DocumentData | null>} The updated document data, or null if not found.
+ * @throws {Error} If the Firestore update fails.
+ */
 export const updateShellDocument = async <T>(shellName:string, shellObject: Partial<T>): Promise<DocumentData | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -321,6 +392,15 @@ export const updateShellDocument = async <T>(shellName:string, shellObject: Part
     }
 };
 
+/**
+ * Updates specific fields of a weapon document in the 'weapons' Firestore collection.
+ * Only the provided fields are modified, others are untouched.
+ *
+ * @param {string} weaponName - The document ID (weapon name) to update.
+ * @param {Partial<T>} weaponObject - An object containing the fields to update.
+ * @returns {Promise<DocumentData | null>} The updated document data, or null if not found.
+ * @throws {Error} If the Firestore update fails.
+ */
 export const updateWeaponDocument = async <T>(weaponName:string, weaponObject: Partial<T>): Promise<DocumentData | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -344,6 +424,15 @@ export const updateWeaponDocument = async <T>(weaponName:string, weaponObject: P
     }
 };
 
+/**
+ * Updates specific fields of a faction document in the 'factions' Firestore collection.
+ * Only the provided fields are modified, others are untouched.
+ *
+ * @param {string} factionName - The document ID (faction name) to update.
+ * @param {Partial<T>} factionObject - An object containing the fields to update.
+ * @returns {Promise<DocumentData | null>} The updated document data, or null if not found.
+ * @throws {Error} If the Firestore update fails.
+ */
 export const updateFactionDocument = async <T>(factionName:string, factionObject: Partial<T>): Promise<DocumentData | null> => {
     try{
         //doc() gets the shell document reference form firestore.
@@ -367,6 +456,14 @@ export const updateFactionDocument = async <T>(factionName:string, factionObject
     }
 };
 
+/**
+ * Deletes a shell document by name from the 'shells' Firestore collection.
+ * Returns the document that is being deleted.
+ *
+ * @param {string} shellName - The document ID (shell name) to delete.
+ * @returns {Promise<DocumentData | null>} The deleted document data, or null if not found.
+ * @throws {Error} If the Firestore delete fails.
+ */
 export const deleteShellDocument = async (shellName:string): Promise<DocumentData | null> => {
     try{
         //Create a reference to a specific document in the 'shells' collection.
@@ -390,6 +487,14 @@ export const deleteShellDocument = async (shellName:string): Promise<DocumentDat
     }
 };
 
+/**
+ * Deletes a weapon document by name from the 'weapons' Firestore collection.
+ * Returns the document that is being deleted.
+ *
+ * @param {string} weaponName - The document ID (weapon name) to delete.
+ * @returns {Promise<DocumentData | null>} The deleted document data, or null if not found.
+ * @throws {Error} If the Firestore delete fails.
+ */
 export const deleteWeaponDocument = async (weaponName:string): Promise<DocumentData | null> => {
     try{
         //Create a reference to a specific document in the 'weapons' collection.
@@ -413,6 +518,14 @@ export const deleteWeaponDocument = async (weaponName:string): Promise<DocumentD
     }
 };
 
+/**
+ * Deletes a faction document by name from the 'factions' Firestore collection.
+ * Returns the document that is being deleted.
+ *
+ * @param {string} factionName - The document ID (faction name) to delete.
+ * @returns {Promise<DocumentData | null>} The deleted document data, or null if not found.
+ * @throws {Error} If the Firestore delete fails.
+ */
 export const deleteFactionDocument = async (factionName:string): Promise<DocumentData | null> => {
     try{
         //Create a reference to a specific document in the 'factions' collection.
@@ -436,6 +549,14 @@ export const deleteFactionDocument = async (factionName:string): Promise<Documen
     }
 };
 
+/**
+ * Creates a new map document in the 'maps' Firestore collection.
+ * Uses the map_name field as the document ID.
+ *
+ * @param {any} mapData - The map data to store, including map_name and image data.
+ * @returns {Promise<any>} The stored map data.
+ * @throws {Error} If the Firestore write fails.
+ */
 export const addMapImageDocument = async (mapData:any): Promise<any> => {
     try{
         //Create a reference to a specific document in the 'maps' collection.
@@ -450,6 +571,13 @@ export const addMapImageDocument = async (mapData:any): Promise<any> => {
     }
 }
 
+/**
+ * Retrieves a map document by name from the 'maps' Firestore collection.
+ *
+ * @param {string} mapName - The document ID (map name) to look up.
+ * @returns {Promise<DocumentData | null>} The map document data, or null if not found.
+ * @throws {Error} If the Firestore query fails.
+ */
 export const getMapDocument = async (mapName: string): Promise<DocumentData | null> => {
     try{
         //Create a reference to a specific document in the 'maps' collection.
