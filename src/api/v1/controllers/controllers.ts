@@ -28,7 +28,13 @@ import { getHealthStatusService,
 import { ShellRequest } from "../models/shellRequest";
 import { WeaponsRequest } from "../models/weaponsRequest";
 
-//CHECKCHECK
+/**
+ * API server health check status.
+ * 
+ * @param {Request} req - incoming request object.
+ * @param {Response} res - response containing a health status object.
+ * @param {void}
+ */
 export const getHealthCheck = (req: Request, res: Response): void => {
     try{
         const healthStatus: HealthCheckResponse = getHealthStatusService();
@@ -38,7 +44,13 @@ export const getHealthCheck = (req: Request, res: Response): void => {
     }
 }
 
-//GET ALL
+/**
+ * Retrieves all shell documents.
+ * 
+ * @param {Request} req - incoming request object.
+ * @param {Response} res - response containing a shell array of all shells.
+ * @param {Promise<void>}
+ */
 export const getAllShells = async (req: Request, res:Response): Promise<void> => {
     try {
         const getAllShellsResult: ShellRequest[] = await getAllShellsService();
@@ -48,6 +60,13 @@ export const getAllShells = async (req: Request, res:Response): Promise<void> =>
     }
 }
 
+/**
+ * Retrieves all weapon documents.
+ * 
+ * @param {Request}req - incoming request object.
+ * @param {Response}res - response containing an array of all weapons.
+ * @returns {Promise<void>}
+ */
 export const getAllWeapons = async (req: Request, res:Response): Promise<void> => {
     try {
         const getAllWeaponsResult: WeaponsRequest[] = await getAllWeaponsService();
@@ -57,6 +76,13 @@ export const getAllWeapons = async (req: Request, res:Response): Promise<void> =
     }
 }
 
+/**
+ * Retrieves all faction documents.
+ * 
+ * @param {Request}req - incoming request object.
+ * @param {Response}res - response containing an array of all factions.
+ *  @returns {Promise<void>}
+ */
 export const getAllFactions = async (req: Request, res:Response): Promise<void> => {
     try {
         const getAllFactionsResult: Factions[] = await getAllFactionsService();
@@ -66,7 +92,13 @@ export const getAllFactions = async (req: Request, res:Response): Promise<void> 
     }
 }
 
-//GET BY
+/**
+ * Retrieves a single shell document by name.
+ * 
+ * @param {Request}req - incoming request object containing the shell name route parameter.
+ * @param {Response}res - response containing the matching single shell or 404 not found.
+ *  @returns {Promise<void>}
+ */
 export const getShellByName = async (req:Request, res:Response): Promise<void> => {
     try{
         const shellName: string = String(req.params.name);
@@ -83,6 +115,13 @@ export const getShellByName = async (req:Request, res:Response): Promise<void> =
     }
 }
 
+/**
+ * Retrieves a single weapon document by name.
+ * 
+ * @param {Request}req - incoming request object containing the weapon name route parameter.
+ * @param {Response}res - response containing the matching single weapon or 404 not found.
+ *  @returns {Promise<void>}
+ */
 export const getWeaponByName = async (req: Request, res:Response): Promise<void> => {
     try{
         const weaponName: string = String(req.params.name);
@@ -99,6 +138,13 @@ export const getWeaponByName = async (req: Request, res:Response): Promise<void>
     }
 }
 
+/**
+ * Retrieves a single faction document by name.
+ * 
+ * @param {Request}req - incoming request object containing the faction name route parameter.
+ * @param {Response}res - response containing the matching single faction or 404 not found.
+ *  @returns {Promise<void>}
+ */
 export const getFactionByName = async (req: Request, res:Response): Promise<void> => {
     try{
         const factionName: string = String(req.params.name);
@@ -115,7 +161,13 @@ export const getFactionByName = async (req: Request, res:Response): Promise<void
     }
 }
 
-//POST
+/**
+ * Creates a new shell document.
+ * 
+ * @param {Request}req - incoming request object containing shell data in the body.
+ * @param {Response}res - response containing the newly created shell.
+ *  @returns {Promise<void>}
+ */
 export const createShell = async (req: Request, res: Response): Promise<void> => {
     try{
         const shellCreateRequest: ShellRequest = {
@@ -147,6 +199,13 @@ export const createShell = async (req: Request, res: Response): Promise<void> =>
     }
 }
 
+/**
+ * Creates a new weapon document.
+ * 
+ * @param {Request}req - incoming request object containing weapon data in the body.
+ * @param {Response}res - response containing the newly created weapon.
+ *  @returns {Promise<void>}
+ */
 export const createWeapon = async (req: Request, res: Response): Promise<void> => {
     try{
         const weaponCreateRequest: WeaponsRequest = {
@@ -169,6 +228,13 @@ export const createWeapon = async (req: Request, res: Response): Promise<void> =
     }
 }
 
+/**
+ * Creates a new faction document.
+ * 
+ * @param {Request}req - incoming request object containing faction data in the body.
+ * @param {Response}res - response containing the newly created faction.
+ *  @returns {Promise<void>}
+ */
 export const createFaction = async (req: Request, res: Response): Promise<void> => {
     try{
         const factionCreateRequest: Factions = {
@@ -183,7 +249,13 @@ export const createFaction = async (req: Request, res: Response): Promise<void> 
     }
 }
 
-//PUT
+/**
+ * Updates the shell document by name.
+ * 
+ * @param {Request}req - incoming request object containing the shell name from params and shell data in the body.
+ * @param {Response}res - response containing the updated shell or 404 for not found.
+ *  @returns {Promise<void>}
+ */
 export const updateShell = async (req: Request, res:Response): Promise<void> => {
     try{
         const shellName: string = String(req.params.name);
@@ -200,6 +272,13 @@ export const updateShell = async (req: Request, res:Response): Promise<void> => 
     }
 }
 
+/**
+ * Updates the weapon documen by name.
+ * 
+ * @param {Request}req - incoming request object containing the weapon name from params and weapon data in the body.
+ * @param {Response}res - response containing the updated weapon or 404 for not found.
+ *  @returns {Promise<void>}
+ */
 export const updateWeapon = async (req: Request, res:Response): Promise<void> => {
     try{
         const weaponName: string = String(req.params.name);
@@ -216,6 +295,13 @@ export const updateWeapon = async (req: Request, res:Response): Promise<void> =>
     }
 }
 
+/**
+ * Updates the faction document by name.
+ * 
+ * @param {Request}req - incoming request object containing the faction name from params and faction data in the body.
+ * @param {Response}res - response containing the updated faction or 404 for not found.
+ *  @returns {Promise<void>}
+ */
 export const updateFaction = async (req: Request, res:Response): Promise<void> => {
     try{
         const name: string = String(req.params.name);
@@ -232,6 +318,13 @@ export const updateFaction = async (req: Request, res:Response): Promise<void> =
     }
 }
 
+/**
+ * Deletes the shell document by name.
+ * 
+ * @param {Request}req - incoming request object containing the shell name from params.
+ * @param {Response}res - response containing the deleted shell or 404 for not found.
+ *  @returns {Promise<void>}
+ */
 export const deleteShell = async (req: Request, res: Response): Promise<void> => {
     try{
         const shellName: string = String(req.params.name);
@@ -248,6 +341,13 @@ export const deleteShell = async (req: Request, res: Response): Promise<void> =>
     }
 }
 
+/**
+ * Deletes the weapon document by name.
+ * 
+ * @param {Request}req - incoming request object containing the weapon name from params.
+ * @param {Response}res - response containing the deleted weapon or 404 for not found.
+ *  @returns {Promise<void>}
+ */
 export const deleteWeapon = async (req: Request, res: Response): Promise<void> => {
     try{
         const weaponName: string = String(req.params.name);
@@ -264,6 +364,12 @@ export const deleteWeapon = async (req: Request, res: Response): Promise<void> =
     }
 }
 
+/**
+ * Deletes the faction document by name.
+ * @param {Request}req - incoming request object containing the faction name from params.
+ * @param {Response}res - response containing the deleted faction or 404 for not found.
+ * @returns {Promise<void>}
+ */
 export const deleteFaction = async (req: Request, res: Response): Promise<void> => {
     try{
         const factionName: string = String(req.params.name);
@@ -280,6 +386,14 @@ export const deleteFaction = async (req: Request, res: Response): Promise<void> 
     }
 }
 
+/**
+ * Creates the map document.
+ * 
+ * @param {Request}req - incoming request object containing image file in req.file and map name from body.
+ * @param {Response}res - response containing the newly map image or 404 if image was not uploaded.
+ * @returns {Promise<void>}
+ *
+ */
 export const createMap = async (req: Request, res: Response): Promise<void> => {
     try{
         if(!req.file){
@@ -298,6 +412,14 @@ export const createMap = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+/**
+ * Retrieves the map document and returns it as png buffer response.
+ * 
+ * @param {Request}req - incoming request object containing the map name from params.
+ * @param {Response}res - response containing the newly map image, or 404 for not found.
+ * @returns {Promise<void>}
+ *
+ */
 export const getMap = async (req: Request, res: Response): Promise<void> => {
     try{
         const mapName: string = String(req.params.name);
