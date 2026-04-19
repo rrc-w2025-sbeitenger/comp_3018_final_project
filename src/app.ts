@@ -14,8 +14,19 @@ import {
 } from "./api/v1/middleware/logger";
 import errorHandler from "./api/v1/middleware/errorHandler";
 import helmet from "helmet";
+import cors from "cors";
 
 const app: Express = express();
+
+//logging middleware (should be applied early in the middleware stack)
+if (process.env.NODE_ENV === "production") {
+    // In production, log to files
+    app.use(accessLogger);
+    app.use(errorLogger);
+} else {
+    //in development, log to console for immediate feedback
+    app.use(consoleLogger);
+}
 
 //configuration for JSON APIs
 const apiHelmetConfig = helmet({
@@ -45,21 +56,34 @@ const apiHelmetConfig = helmet({
     xFrameOptions: {action: "deny"},
 });
 
-//logging middleware (should be applied early in the middleware stack)
-if (process.env.NODE_ENV === "production") {
-    // In production, log to files
-    app.use(accessLogger);
-    app.use(errorLogger);
-} else {
-    //in development, log to console for immediate feedback
-    app.use(consoleLogger);
-}
+const getCorsOptions = () => {
+    const isDevelopment = process.env.NODE_ENV === "development";
+
+    if (isDevelopment) {
+        return {
+            credentials: true,
+            optionsSuccessStatus: 204,
+        };
+    }
+
+    // Strict origins in production
+    return {
+        origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        optionsSuccessStatus: 204,
+        maxAge: 1200,
+    };
+};
 
 //helmet.js
 app.use(apiHelmetConfig);
-
+//cors
+app.use(cors(getCorsOptions()));
 //body parsing global middleware.
 app.use(express.json());
+//logging
 app.use((morgan("combined")));
 
 //router handler for marathon API.
