@@ -456,7 +456,7 @@ export const getMapDocument = async (mapName: string): Promise<DocumentData | nu
         const mapDocumentRef: DocumentReference = db.collection("maps").doc(mapName);
         const mapDocument: DocumentData = await mapDocumentRef.get();
 
-        if(!mapDocument){
+        if(!mapDocument.exists){
             return null;
         }
 
