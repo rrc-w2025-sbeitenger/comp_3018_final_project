@@ -219,12 +219,7 @@ export const updateWeapon = async (req: Request, res:Response): Promise<void> =>
 export const updateFaction = async (req: Request, res:Response): Promise<void> => {
     try{
         const name: string = String(req.params.name);
-        const updateFactionRequest: Factions = {
-            lore: req.body.lore,
-            name: req.body.name
-        }
-
-        const updatedFaction: DocumentData | null = await updateFactionByNameService(name, updateFactionRequest);
+        const updatedFaction: DocumentData | null = await updateFactionByNameService(name, req.body);
         
         if(!updatedFaction){
             res.status(HTTP_STATUS.NOT_FOUND).json({message: `Validation error: Valid faction name is required.`});

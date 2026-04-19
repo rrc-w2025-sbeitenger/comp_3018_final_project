@@ -248,5 +248,38 @@ export const marathonSchemas = {
                 "number.empty": `"aim_assist" cannot be empty`
             }),    
         })
+    },
+
+    updateFaction: {
+        params: Joi.object({
+            name: Joi.string().trim().min(1).required().messages({
+                "any.required": `"name" is required.`,
+                "string.empty": `"name" cannot be empty`,
+                "string.min": `"name" cannot be empty`
+            }),
+        }),
+        body: Joi.object({
+            name: Joi.string().optional().messages({
+                "string.empty": `"name" cannot be empty`
+            }),
+            lore: Joi.string().optional().messages({
+                "string.empty": `"lore" cannot be empty`
+            }),      
+        })
+    },
+
+    updateMap: {
+        params: Joi.object({
+            name: Joi.string().trim().min(1).required().messages({
+                "any.required": `"name" is required.`,
+                "string.empty": `"name" cannot be empty`,
+                "string.min": `"name" cannot be empty`
+            }),
+        }),
+        body: Joi.object({
+            map_name: Joi.string().optional().messages({
+                "string.empty": `"name" cannot be empty`
+            })    
+        })
     }
 }
