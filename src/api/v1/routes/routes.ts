@@ -408,7 +408,7 @@ router.get("/maps/:name", validateRequest(marathonSchemas.getByName), getMap);
  *       '500':
  *         description: Internal server error
  */
-router.post("/shells", createShell);
+router.post("/shells", validateRequest(marathonSchemas.createShell), createShell);
 
 /**
  * @openapi
@@ -441,7 +441,7 @@ router.post("/shells", createShell);
  *       '500':
  *         description: Internal server error
  */
-router.post("/weapons", createWeapon);
+router.post("/weapons", validateRequest(marathonSchemas.createWeapon), createWeapon);
 
 /**
  * @openapi
@@ -468,7 +468,7 @@ router.post("/weapons", createWeapon);
  *       '500':
  *         description: Internal server error
  */
-router.post("/factions", createFaction);
+router.post("/factions", validateRequest(marathonSchemas.createFaction), createFaction);
 
 /**
  * @openapi
@@ -512,7 +512,7 @@ router.post("/factions", createFaction);
  *       '500':
  *         description: Internal server error
  */
-router.post("/maps", upload.single('map_image'), createMap);
+router.post("/maps", upload.single('map_image'), validateRequest(marathonSchemas.createMaps), createMap);
 
 /**
  * @openapi
@@ -568,7 +568,7 @@ router.post("/maps", upload.single('map_image'), createMap);
  *       '500':
  *         description: Internal server error
  */
-router.put("/shells/:name", updateShell);
+router.put("/shells/:name", validateRequest(marathonSchemas.updateShell), updateShell);
 
 /**
  * @openapi
@@ -615,7 +615,7 @@ router.put("/shells/:name", updateShell);
  *       '500':
  *         description: Internal server error
  */
-router.put("/weapons/:name", updateWeapon);
+router.put("/weapons/:name", validateRequest(marathonSchemas.updateWeapon), updateWeapon);
 
 /**
  * @openapi
@@ -656,7 +656,7 @@ router.put("/weapons/:name", updateWeapon);
  *       '500':
  *         description: Internal server error
  */
-router.put("/factions/:name", updateFaction);
+router.put("/factions/:name", validateRequest(marathonSchemas.updateFaction), updateFaction);
 
 /**
  * @openapi
@@ -706,7 +706,7 @@ router.put("/factions/:name", updateFaction);
  *       '500':
  *         description: Internal server error
  */
-router.delete("/shells/:name", deleteShell);
+router.delete("/shells/:name", validateRequest(marathonSchemas.getByName), deleteShell);
 
 /**
  * @openapi
@@ -747,7 +747,7 @@ router.delete("/shells/:name", deleteShell);
  *       '500':
  *         description: Internal server error
  */
-router.delete("/weapons/:name", deleteWeapon);
+router.delete("/weapons/:name", validateRequest(marathonSchemas.getByName), deleteWeapon);
 
 /**
  * @openapi
@@ -782,7 +782,7 @@ router.delete("/weapons/:name", deleteWeapon);
  *       '500':
  *         description: Internal server error
  */
-router.delete("/factions/:name", deleteFaction);
+router.delete("/factions/:name", validateRequest(marathonSchemas.getByName), deleteFaction);
 //!add put routes later and admin routes
 
 export default router;
