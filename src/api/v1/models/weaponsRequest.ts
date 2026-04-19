@@ -2,7 +2,7 @@
  * @openapi
  * components:
  *   schemas:
- *     Weapons:
+ *     WeaponRequest:
  *       type: object
  *       required:
  *         - weapon_name
